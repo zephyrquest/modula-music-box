@@ -22,7 +22,7 @@ public class KeyboardController {
 
         for (var blackKey: this.keyboard.getBlackKeys()) {
             blackKey.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> keyPressed(blackKey));
-            blackKey.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> keyPressed(blackKey));
+            blackKey.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> keyReleased(blackKey));
         }
     }
 
@@ -33,8 +33,10 @@ public class KeyboardController {
     }
 
     private void keyReleased(Key key) {
-        String note = key.getNote();
+        if(!keyboardSynthesizer.getCurrentInstrument().hasSustain()) {
+            String note = key.getNote();
 
-        keyboardSynthesizer.stopNote(note);
+            keyboardSynthesizer.stopNote(note);
+        }
     }
 }

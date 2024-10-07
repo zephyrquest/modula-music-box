@@ -1,15 +1,17 @@
 package com.github.zephyrquest.modulamusicbox.models;
 
+import org.yaml.snakeyaml.Yaml;
+
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.util.*;
 
 public class KeyboardSynthesizer {
     private Synthesizer synthesizer;
-    private Instrument[] availableInstruments;
+    private List<MidiInstrument> availableInstruments;
     private MidiChannel[] midiChannels;
-    private Instrument[] instrumentInChannels;
+    private MidiInstrument[] instrumentInChannels;
     private int currentChannelNumber;
     private Properties midiNotes;
     private int currentVelocity;
@@ -52,7 +54,7 @@ public class KeyboardSynthesizer {
         if(channelNumber > 0 && channelNumber <= midiChannels.length) {
             currentChannelNumber = channelNumber;
             if(instrumentInChannels[currentChannelNumber - 1] == null) {
-                updateInstrumentInChannel(availableInstruments[0], currentChannelNumber);
+                updateInstrumentInChannel(availableInstruments.get(0), currentChannelNumber);
             }
         }
         else {
@@ -64,7 +66,7 @@ public class KeyboardSynthesizer {
         boolean found = false;
 
         for(var instrument : availableInstruments) {
-            if(instrument.getName().trim().equals(instrumentName)) {
+            if(instrument.getName().equals(instrumentName)) {
                 updateInstrumentInChannel(instrument, currentChannelNumber);
                 found = true;
                 break;
@@ -72,7 +74,7 @@ public class KeyboardSynthesizer {
         }
 
         if(!found) {
-            updateInstrumentInChannel(availableInstruments[0], currentChannelNumber);
+            updateInstrumentInChannel(availableInstruments.get(0), currentChannelNumber);
         }
     }
 
@@ -93,11 +95,11 @@ public class KeyboardSynthesizer {
         return midiChannels[currentChannelNumber];
     }
 
-    public Instrument[] getAvailableInstruments() {
+    public List<MidiInstrument> getAvailableInstruments() {
         return availableInstruments;
     }
 
-    public Instrument getCurrentInstrument() {
+    public MidiInstrument getCurrentInstrument() {
         return instrumentInChannels[currentChannelNumber - 1];
     }
 
@@ -114,16 +116,40 @@ public class KeyboardSynthesizer {
             synthesizer = MidiSystem.getSynthesizer();
             synthesizer.open();
             midiChannels = synthesizer.getChannels();
-            instrumentInChannels = new Instrument[midiChannels.length];
+            instrumentInChannels = new MidiInstrument[midiChannels.length];
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void initInstruments() {
-        availableInstruments = synthesizer.getAvailableInstruments();
+        availableInstruments = new ArrayList<>();
+        var allInstruments = synthesizer.getAvailableInstruments();
 
-        updateInstrumentInChannel(availableInstruments[0], currentChannelNumber);
+        try(var inputStream = getClass().getResourceAsStream("/instruments.yml")) {
+            Yaml yaml = new Yaml();
+            Map<String, Object> data = yaml.load(inputStream);
+
+            var instrumentsData = (List<Map<String, Object>>) data.get("instruments");
+            for(var instrumentData : instrumentsData) {
+                String name = (String) instrumentData.get("name");
+
+                var instrumentOpt = Arrays.stream(allInstruments)
+                        .filter(i -> i.getName().trim().equals(name))
+                        .findFirst();
+                if(instrumentOpt.isPresent()) {
+                    String type = (String) instrumentData.get("type");
+                    boolean hasSustain = (Boolean) instrumentData.get("hasSustain");
+                    var instrument = new MidiInstrument(instrumentOpt.get(), name, type, hasSustain);
+                    availableInstruments.add(instrument);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        updateInstrumentInChannel(availableInstruments.get(0), currentChannelNumber);
     }
 
     private void loadMidiNotes() {
@@ -135,10 +161,10 @@ public class KeyboardSynthesizer {
         }
     }
 
-    private void updateInstrumentInChannel(Instrument instrument, int channelNumber) {
+    private void updateInstrumentInChannel(MidiInstrument instrument, int channelNumber) {
         instrumentInChannels[channelNumber - 1] = instrument;
-        synthesizer.loadInstrument(instrument);
-        midiChannels[channelNumber - 1].programChange(instrument.getPatch().getBank(),
-                instrument.getPatch().getProgram());
+        synthesizer.loadInstrument(instrument.getInstrument());
+        midiChannels[channelNumber - 1].programChange(instrument.getInstrument().getPatch().getBank(),
+               instrument.getInstrument().getPatch().getProgram());
     }
 }

@@ -1,9 +1,8 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
 import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
+import com.github.zephyrquest.modulamusicbox.models.MidiInstrument;
 import com.github.zephyrquest.modulamusicbox.views.components.MidiControls;
-
-import java.util.Arrays;
 
 public class MidiControlsController {
     private final MidiControls midiControls;
@@ -56,12 +55,12 @@ public class MidiControlsController {
         var instrumentComboBox = midiControls.getInstrumentComboBox();
         var instruments = keyboardSynthesizer.getAvailableInstruments();
 
-        instrumentComboBox.getItems().addAll(Arrays
-                .stream(instruments)
-                .map(instrument -> instrument.getName().trim())
+        instrumentComboBox.getItems().addAll(instruments
+                .stream()
+                .map(MidiInstrument::getName)
                 .toList());
 
-        instrumentComboBox.getSelectionModel().select(keyboardSynthesizer.getCurrentInstrument().getName().trim());
+        instrumentComboBox.getSelectionModel().select(keyboardSynthesizer.getCurrentInstrument().getName());
 
         instrumentComboBox.setOnAction(event -> {
             var instrumentName = instrumentComboBox.getSelectionModel().getSelectedItem();

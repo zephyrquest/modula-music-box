@@ -13,6 +13,7 @@ public class KeyboardSynthesizer {
     private MidiChannel[] midiChannels;
     private MidiInstrument[] instrumentInChannels;
     private int currentChannelNumber;
+    private Receiver receiver;
     private Properties midiNotes;
     private int currentVelocity;
 
@@ -101,6 +102,10 @@ public class KeyboardSynthesizer {
 
     public MidiInstrument getCurrentInstrument() {
         return instrumentInChannels[currentChannelNumber - 1];
+    }
+
+    public Receiver getReceiver() {
+        return receiver;
     }
 
     public int getCurrentVelocity() {

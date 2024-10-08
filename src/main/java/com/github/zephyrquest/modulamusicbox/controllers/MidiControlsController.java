@@ -1,21 +1,30 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
+import com.github.zephyrquest.modulamusicbox.models.FileInputSequencer;
 import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
 import com.github.zephyrquest.modulamusicbox.models.MidiInstrument;
 import com.github.zephyrquest.modulamusicbox.views.components.MidiControls;
 
+import java.io.File;
+
 public class MidiControlsController {
     private final MidiControls midiControls;
     private final KeyboardSynthesizer keyboardSynthesizer;
+    private final FileInputSequencer fileInputSequencer;
 
 
-    public MidiControlsController(MidiControls midiControls, KeyboardSynthesizer keyboardSynthesizer) {
+    public MidiControlsController(MidiControls midiControls, KeyboardSynthesizer keyboardSynthesizer,
+                                  FileInputSequencer fileInputSequencer) {
         this.midiControls = midiControls;
         this.keyboardSynthesizer = keyboardSynthesizer;
+        this.fileInputSequencer = fileInputSequencer;
+
+        this.fileInputSequencer.getTransmitter().setReceiver(keyboardSynthesizer.getReceiver());
 
         setChannelsInView();
         setInstrumentsInView();
         setVelocityInView();
+        setMidiInputFilesInView();
     }
 
     private void selectChannel(int channelNumber) {
@@ -88,6 +97,38 @@ public class MidiControlsController {
         velocitySpinner.getValueFactory().valueProperty().addListener((observableValue, integer, t1) -> {
             changeVelocity(t1);
             velocitySlider.setValue(t1);
+        });
+    }
+
+    private void setMidiInputFilesInView() {
+        var midiInputFilesComboBox = midiControls.getMidiInputFileComboBox();
+        var midiInputFileStartButton = midiControls.getMidiInputFileStartButton();
+        var midiInputFilePauseButton = midiControls.getMidiInputFilePauseButton();
+        var midiInputFileRewindButton = midiControls.getMidiInputFileRewindButton();
+        var fileNames = fileInputSequencer.getMidiFiles()
+                .stream()
+                .map(File::getName)
+                .toList();
+
+        midiInputFilesComboBox.getItems().add("-");
+        midiInputFilesComboBox.getItems().addAll(fileNames);
+        midiInputFilesComboBox.getSelectionModel().select("-");
+
+        midiInputFilesComboBox.setOnAction(event -> {
+            var midiFileName = midiInputFilesComboBox.getSelectionModel().getSelectedItem();
+            fileInputSequencer.setSequence(midiFileName);
+        });
+
+        midiInputFileStartButton.setOnAction(event -> {
+            fileInputSequencer.startSequencer();
+        });
+
+        midiInputFilePauseButton.setOnAction(event -> {
+            fileInputSequencer.stopSequencer();
+        });
+
+        midiInputFileRewindButton.setOnAction(event -> {
+            fileInputSequencer.rewindSequencer();
         });
     }
 }

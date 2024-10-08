@@ -3,6 +3,7 @@ package com.github.zephyrquest.modulamusicbox;
 import com.github.zephyrquest.modulamusicbox.controllers.ApplicationExitController;
 import com.github.zephyrquest.modulamusicbox.controllers.KeyboardController;
 import com.github.zephyrquest.modulamusicbox.controllers.MidiControlsController;
+import com.github.zephyrquest.modulamusicbox.models.FileInputSequencer;
 import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
 import com.github.zephyrquest.modulamusicbox.views.*;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 public class MainFX extends Application {
     // Models
     private KeyboardSynthesizer keyboardSynthesizer;
+    private FileInputSequencer fileInputSequencer;
 
     // Controllers
     private ApplicationExitController applicationExitController;
@@ -56,6 +58,7 @@ public class MainFX extends Application {
         }
 
         keyboardSynthesizer = new KeyboardSynthesizer();
+        fileInputSequencer = new FileInputSequencer();
 
         settingsMenu = new SettingsMenu();
         navigationMenu = new NavigationMenu();
@@ -67,7 +70,8 @@ public class MainFX extends Application {
         navigationMenuContainerHBox.getChildren().add(navigationMenu.getMenuBar());
 
         VBox topContainerVBox = new VBox();
-        topContainerVBox.getChildren().addAll(settingsMenu.getMenuBar(), navigationMenuContainerHBox);
+        //topContainerVBox.getChildren().addAll(settingsMenu.getMenuBar(), navigationMenuContainerHBox);
+        topContainerVBox.getChildren().add(settingsMenu.getMenuBar());
 
         borderPane = new BorderPane();
 
@@ -79,12 +83,13 @@ public class MainFX extends Application {
 
         this.stage.setScene(scene);
 
+        borderPane.setTop(topContainerVBox);
         midiSyncView = new MidiSyncView(this.stage, scene, borderPane, keyboard, midiControls);
         grooveBoxView = new GrooveBoxView(this.stage, scene, borderPane);
 
-        applicationExitController = new ApplicationExitController(settingsMenu, keyboardSynthesizer);
+        applicationExitController = new ApplicationExitController(this.stage, settingsMenu, keyboardSynthesizer, fileInputSequencer);
         keyboardController = new KeyboardController(keyboard, keyboardSynthesizer);
-        midiControlsController = new MidiControlsController(midiControls, keyboardSynthesizer);
+        midiControlsController = new MidiControlsController(midiControls, keyboardSynthesizer, fileInputSequencer);
 
         midiSyncView.show();
 

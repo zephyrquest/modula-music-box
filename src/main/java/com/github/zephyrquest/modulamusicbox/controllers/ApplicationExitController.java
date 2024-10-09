@@ -1,7 +1,6 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
-import com.github.zephyrquest.modulamusicbox.models.FileInputSequencer;
-import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
+import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
 import com.github.zephyrquest.modulamusicbox.views.components.SettingsMenu;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -9,24 +8,20 @@ import javafx.stage.Stage;
 public class ApplicationExitController {
     private final Stage stage;
     private final SettingsMenu settingsMenu;
-    private final KeyboardSynthesizer keyboardSynthesizer;
-    private final FileInputSequencer fileInputSequencer;
+    private final TrackSequencer trackSequencer;
 
 
-    public ApplicationExitController(Stage stage, SettingsMenu settingsMenu, KeyboardSynthesizer keyboardSynthesizer,
-                                     FileInputSequencer fileInputSequencer) {
+    public ApplicationExitController(Stage stage, SettingsMenu settingsMenu, TrackSequencer trackSequencer) {
         this.stage = stage;
         this.settingsMenu = settingsMenu;
-        this.keyboardSynthesizer = keyboardSynthesizer;
-        this.fileInputSequencer = fileInputSequencer;
+        this.trackSequencer = trackSequencer;
 
         this.stage.setOnCloseRequest(event -> exitApplication());
         this.settingsMenu.getExitMenuItem().setOnAction(event -> exitApplication());
     }
 
     private void exitApplication() {
-        keyboardSynthesizer.closeSynthesizer();
-        fileInputSequencer.closeSequencer();
+        trackSequencer.closeSequencer();
         Platform.exit();
     }
 }

@@ -1,44 +1,36 @@
 package com.github.zephyrquest.modulamusicbox;
 
-import com.github.zephyrquest.modulamusicbox.controllers.ApplicationExitController;
-import com.github.zephyrquest.modulamusicbox.controllers.KeyboardController;
-import com.github.zephyrquest.modulamusicbox.controllers.MidiControlsController;
-import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
+import com.github.zephyrquest.modulamusicbox.controllers.*;
+import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
+import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
 import com.github.zephyrquest.modulamusicbox.views.*;
-import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
-import com.github.zephyrquest.modulamusicbox.views.components.MidiControls;
-import com.github.zephyrquest.modulamusicbox.views.components.NavigationMenu;
-import com.github.zephyrquest.modulamusicbox.views.components.SettingsMenu;
+import com.github.zephyrquest.modulamusicbox.views.components.*;
 import javafx.application.Application;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainFX extends Application {
     // Models
-    private KeyboardSynthesizer keyboardSynthesizer;
+    private TrackSequencer trackSequencer;
+    private MidiFileManager midiFileManager;
 
     // Controllers
     private ApplicationExitController applicationExitController;
-    private KeyboardController keyboardController;
-    private MidiControlsController midiControlsController;
+    private TrackController trackController;
 
     // Views
+    private MainView mainView;
     private SettingsMenu settingsMenu;
-    private NavigationMenu navigationMenu;
-    private MidiSyncView midiSyncView;
-    private GrooveBoxView grooveBoxView;
     private Keyboard keyboard;
-    private MidiControls midiControls;
+    private FileSelection fileSelection;
+    private TrackControls trackControls;
 
     private Stage stage;
     private Scene scene;
     private BorderPane borderPane;
-
 
 
     public static void main(String[] args) {
@@ -55,19 +47,16 @@ public class MainFX extends Application {
             this.stage.getIcons().add(new Image(icon));
         }
 
-        keyboardSynthesizer = new KeyboardSynthesizer();
+        trackSequencer = new TrackSequencer();
+        midiFileManager = new MidiFileManager();
 
         settingsMenu = new SettingsMenu();
-        navigationMenu = new NavigationMenu();
         keyboard = new Keyboard();
-        midiControls = new MidiControls();
-
-        HBox navigationMenuContainerHBox = new HBox();
-        navigationMenuContainerHBox.setAlignment(Pos.CENTER);
-        navigationMenuContainerHBox.getChildren().add(navigationMenu.getMenuBar());
+        fileSelection = new FileSelection();
+        trackControls = new TrackControls();
 
         VBox topContainerVBox = new VBox();
-        topContainerVBox.getChildren().addAll(settingsMenu.getMenuBar(), navigationMenuContainerHBox);
+        topContainerVBox.getChildren().add(settingsMenu.getMenuBar());
 
         borderPane = new BorderPane();
 
@@ -79,14 +68,13 @@ public class MainFX extends Application {
 
         this.stage.setScene(scene);
 
-        midiSyncView = new MidiSyncView(this.stage, scene, borderPane, keyboard, midiControls);
-        grooveBoxView = new GrooveBoxView(this.stage, scene, borderPane);
+        borderPane.setTop(topContainerVBox);
+        mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls);
 
-        applicationExitController = new ApplicationExitController(settingsMenu, keyboardSynthesizer);
-        keyboardController = new KeyboardController(keyboard, keyboardSynthesizer);
-        midiControlsController = new MidiControlsController(midiControls, keyboardSynthesizer);
+        applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer);
+        trackController = new TrackController(trackSequencer, midiFileManager, fileSelection, keyboard, trackControls);
 
-        midiSyncView.show();
+        mainView.show();
 
         this.stage.show();
     }

@@ -11,4 +11,10 @@ public class WhiteKey extends Key {
         this.setStrokeWidth(1.);
         this.setStroke(Color.BLACK);
     }
+
+    @Override
+    public void release() {
+        super.release();
+        this.setFill(Color.WHITE);
+    }
 }

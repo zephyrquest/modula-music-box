@@ -19,8 +19,7 @@ public class MainFX extends Application {
 
     // Controllers
     private ApplicationExitController applicationExitController;
-    private FileSelectionController fileSelectionController;
-    private TrackControlsController trackControlsController;
+    private TrackController trackController;
 
     // Views
     private MainView mainView;
@@ -73,8 +72,7 @@ public class MainFX extends Application {
         mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls);
 
         applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer);
-        fileSelectionController = new FileSelectionController(fileSelection, trackSequencer, midiFileManager);
-        trackControlsController = new TrackControlsController(trackControls, trackSequencer);
+        trackController = new TrackController(trackSequencer, midiFileManager, fileSelection, keyboard, trackControls);
 
         mainView.show();
 

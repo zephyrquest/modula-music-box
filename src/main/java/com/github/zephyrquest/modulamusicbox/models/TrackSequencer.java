@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class TrackSequencer {
     private Sequencer sequencer;
-
+    private Transmitter transmitter;
 
 
     public TrackSequencer() {
@@ -46,10 +46,15 @@ public class TrackSequencer {
         }
     }
 
+    public Transmitter getTransmitter() {
+        return transmitter;
+    }
+
     private void initSequencer() {
         try {
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
+            transmitter = sequencer.getTransmitter();
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }

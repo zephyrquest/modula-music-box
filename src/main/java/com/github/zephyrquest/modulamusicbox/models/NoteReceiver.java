@@ -10,16 +10,21 @@ public class NoteReceiver implements Receiver {
 
     private final Keyboard keyboard;
     private int currentChannel;
+    private boolean active;
 
     public NoteReceiver(Keyboard keyboard) {
         this.keyboard = keyboard;
-        currentChannel = 0;
+        active = false;
     }
 
     @Override
     public void send(MidiMessage message, long timeStamp) {
+        if(!active) {
+            return;
+        }
+
         if(message instanceof ShortMessage shortMessage) {
-            if(shortMessage.getChannel() == currentChannel) {
+            if(shortMessage.getChannel() == currentChannel - 1) {
                 int key = shortMessage.getData1();
                 int velocity = shortMessage.getData2();
                 if(shortMessage.getCommand() == ShortMessage.NOTE_ON && velocity > 0) {
@@ -39,5 +44,9 @@ public class NoteReceiver implements Receiver {
 
     public void setCurrentChannel(int currentChannel) {
         this.currentChannel = currentChannel;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

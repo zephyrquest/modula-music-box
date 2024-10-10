@@ -14,7 +14,6 @@ public class WhiteKey extends Key {
 
     @Override
     public void release() {
-        super.release();
         this.setFill(Color.WHITE);
     }
 }

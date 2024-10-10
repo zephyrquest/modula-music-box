@@ -3,33 +3,42 @@ package com.github.zephyrquest.modulamusicbox.controllers;
 import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
 import com.github.zephyrquest.modulamusicbox.models.NoteReceiver;
 import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
+import com.github.zephyrquest.modulamusicbox.views.components.ChannelsControls;
 import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
+import javafx.scene.control.RadioButton;
 
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Track;
 import java.io.File;
 
 public class TrackController {
     private final TrackSequencer trackSequencer;
     private final MidiFileManager midiFileManager;
+    private final NoteReceiver noteReceiver;
 
     private final FileSelection fileSelection;
     private final Keyboard keyboard;
     private final TrackControls trackControls;
+    private final ChannelsControls channelsControls;
 
 
     public TrackController(TrackSequencer trackSequencer, MidiFileManager midiFileManager,
-                           FileSelection fileSelection, Keyboard keyboard, TrackControls trackControls) {
+                           FileSelection fileSelection, Keyboard keyboard, TrackControls trackControls,
+                           ChannelsControls channelsControls) {
         this.trackSequencer = trackSequencer;
         this.midiFileManager = midiFileManager;
         this.fileSelection = fileSelection;
         this.keyboard = keyboard;
         this.trackControls = trackControls;
+        this.channelsControls = channelsControls;
+        this.noteReceiver = new NoteReceiver(this.keyboard);
+        this.trackSequencer.getTransmitter().setReceiver(this.noteReceiver);
 
         setFileSelectionInView();
         setTrackControlsInView();
-
-        this.trackSequencer.getTransmitter().setReceiver(new NoteReceiver(keyboard));
+        setChannelsControlsInView();
     }
 
     private void setFileSelectionInView() {
@@ -48,7 +57,12 @@ public class TrackController {
             String midiFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
             File midiFile = midiFileManager.getMidiFile(midiFileName);
             if(midiFile != null) {
-                trackSequencer.setSequence(midiFile);
+                noteReceiver.setActive(false);
+                keyboard.releaseAllKeys();
+
+                changeTrack(midiFile);
+
+                noteReceiver.setActive(true);
             }
         });
     }
@@ -61,5 +75,33 @@ public class TrackController {
         playButton.setOnAction(event -> trackSequencer.startSequencer());
         stopButton.setOnAction(event -> trackSequencer.stopSequencer());
         rewindButton.setOnAction(event -> trackSequencer.rewindSequencer());
+    }
+
+    private void setChannelsControlsInView() {
+        var channelButtonsGroup = channelsControls.getChannelButtonsGroup();
+        channelButtonsGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
+            if(t1 != null) {
+                noteReceiver.setActive(false);
+                keyboard.releaseAllKeys();
+
+                RadioButton selectedChannelButton = (RadioButton) t1;
+                int channelNumber = Integer.parseInt(selectedChannelButton.getId());
+                changeChannelInTrack(channelNumber);
+
+                noteReceiver.setActive(true);
+            }
+        });
+    }
+
+    private void changeTrack(File midiFile) {
+        trackSequencer.setCurrentSequence(midiFile);
+        Sequence sequence = trackSequencer.getCurrentSequence();
+        Track[] tracks = sequence.getTracks();
+        channelsControls.updateView(tracks);
+        noteReceiver.setCurrentChannel(1);
+    }
+
+    private void changeChannelInTrack(int channelNumber) {
+        noteReceiver.setCurrentChannel(channelNumber);
     }
 }

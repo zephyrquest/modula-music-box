@@ -97,6 +97,10 @@ public class Keyboard extends StackPane {
         }
     }
 
+    public void releaseAllKeys() {
+        keys.forEach((noteNumber, key) -> key.release());
+    }
+
     private void loadMidiNotes() {
         try(InputStream inputStream = getClass().getResourceAsStream("/midi_notes.properties")) {
             midiNotes = new Properties();

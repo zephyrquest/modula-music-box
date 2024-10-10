@@ -11,6 +11,10 @@
     -fx-alignment: center;
 }
 
+.channels-controls-container {
+    -fx-alignment: center;
+}
+
 .keyboard-container {
     -fx-alignment: center;
 }

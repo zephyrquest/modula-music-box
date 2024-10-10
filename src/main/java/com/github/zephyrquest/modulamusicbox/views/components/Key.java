@@ -19,11 +19,8 @@ public abstract class Key extends Rectangle {
     }
 
     public void press() {
-        System.out.println("Note " + note + " pressed");
         this.setFill(Color.rgb(220, 220, 255));
     }
 
-    public void release() {
-        System.out.println("Note " + note + " released");
-    }
+    public abstract void release();
 }

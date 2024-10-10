@@ -12,7 +12,6 @@ public class BlackKey extends Key {
 
     @Override
     public void release() {
-        super.release();
         this.setFill(Color.BLACK);
     }
 }

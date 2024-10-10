@@ -2,6 +2,7 @@ package com.github.zephyrquest.modulamusicbox;
 
 import com.github.zephyrquest.modulamusicbox.controllers.*;
 import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
+import com.github.zephyrquest.modulamusicbox.models.NoteReceiver;
 import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
 import com.github.zephyrquest.modulamusicbox.views.*;
 import com.github.zephyrquest.modulamusicbox.views.components.*;
@@ -27,6 +28,7 @@ public class MainFX extends Application {
     private Keyboard keyboard;
     private FileSelection fileSelection;
     private TrackControls trackControls;
+    private ChannelsControls channelsControls;
 
     private Stage stage;
     private Scene scene;
@@ -54,6 +56,7 @@ public class MainFX extends Application {
         keyboard = new Keyboard();
         fileSelection = new FileSelection();
         trackControls = new TrackControls();
+        channelsControls = new ChannelsControls();
 
         VBox topContainerVBox = new VBox();
         topContainerVBox.getChildren().add(settingsMenu.getMenuBar());
@@ -69,10 +72,11 @@ public class MainFX extends Application {
         this.stage.setScene(scene);
 
         borderPane.setTop(topContainerVBox);
-        mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls);
+        mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls, channelsControls);
 
         applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer);
-        trackController = new TrackController(trackSequencer, midiFileManager, fileSelection, keyboard, trackControls);
+        trackController = new TrackController(trackSequencer, midiFileManager,
+                fileSelection, keyboard, trackControls, channelsControls);
 
         mainView.show();
 

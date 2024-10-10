@@ -7,16 +7,16 @@ import java.io.IOException;
 public class TrackSequencer {
     private Sequencer sequencer;
     private Transmitter transmitter;
-
+    private Sequence currentSequence;
 
     public TrackSequencer() {
         initSequencer();
     }
 
-    public void setSequence(File file) {
+    public void setCurrentSequence(File file) {
         try {
-            Sequence sequence = MidiSystem.getSequence(file);
-            sequencer.setSequence(sequence);
+            currentSequence = MidiSystem.getSequence(file);
+            sequencer.setSequence(currentSequence);
         } catch (InvalidMidiDataException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,6 +48,10 @@ public class TrackSequencer {
 
     public Transmitter getTransmitter() {
         return transmitter;
+    }
+
+    public Sequence getCurrentSequence() {
+        return currentSequence;
     }
 
     private void initSequencer() {

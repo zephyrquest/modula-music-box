@@ -1,39 +1,49 @@
 package com.github.zephyrquest.modulamusicbox.views.components;
 
+import com.github.zephyrquest.modulamusicbox.models.Channel;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ChannelsControls extends VBox {
     private final ToggleGroup channelButtonsGroup;
-    private RadioButton[] channelButtons;
 
     public ChannelsControls() {
         channelButtonsGroup = new ToggleGroup();
     }
 
-    public void updateView(Track[] tracks) {
+    public void updateView(Map<Integer, Channel> channels) {
         this.getChildren().clear();
         channelButtonsGroup.getToggles().clear();
-        channelButtons = new RadioButton[tracks.length];
+        List<RadioButton> channelButtons = new ArrayList<>();
 
-        for(int i = 0; i < tracks.length; i++) {
-            Track track = tracks[i];
-
+        for(var entry : channels.entrySet()) {
             HBox channelContainer = new HBox();
+            channelContainer.getStyleClass().add("channel-container");
 
-            channelButtons[i] = new RadioButton("Channel " + (i + 1));
-            channelButtons[i].setId(String.valueOf(i + 1));
-            channelButtons[i].setToggleGroup(channelButtonsGroup);
+            RadioButton radioButton = new RadioButton("Channel " + entry.getKey());
+            radioButton.setId(String.valueOf(entry.getKey()));
+            radioButton.setToggleGroup(channelButtonsGroup);
+            channelButtons.add(radioButton);
 
-            channelContainer.getChildren().add(channelButtons[i]);
-            this.getChildren().add(channelContainer);
+            Label instrumentsLabel = new Label();
+            StringBuilder stringBuilder = new StringBuilder();
+            entry.getValue().getInstruments().forEach(instrument -> {
+                stringBuilder.append(instrument).append(" ");
+            });
+            instrumentsLabel.setText(stringBuilder.toString());
+
+            channelContainer.getChildren().addAll(radioButton, instrumentsLabel);
+            this.getChildren().addAll(channelContainer);
         }
 
-        channelButtonsGroup.selectToggle(channelButtons[0]);
+        channelButtonsGroup.selectToggle(channelButtons.get(0));
     }
 
     public ToggleGroup getChannelButtonsGroup() {

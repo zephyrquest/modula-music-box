@@ -24,7 +24,7 @@ public class NoteReceiver implements Receiver {
         }
 
         if(message instanceof ShortMessage shortMessage) {
-            if(shortMessage.getChannel() == currentChannel - 1) {
+            if(shortMessage.getChannel() == currentChannel) {
                 int key = shortMessage.getData1();
                 int velocity = shortMessage.getData2();
                 if(shortMessage.getCommand() == ShortMessage.NOTE_ON && velocity > 0) {

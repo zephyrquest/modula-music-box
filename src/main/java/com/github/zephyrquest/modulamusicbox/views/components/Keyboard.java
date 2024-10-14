@@ -1,6 +1,5 @@
 package com.github.zephyrquest.modulamusicbox.views.components;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -56,7 +55,6 @@ public class Keyboard extends StackPane {
             Label noteLabel = new Label(note);
             VBox whiteKeyContainer = new VBox();
             whiteKeyContainer.getStyleClass().add("white-key-container");
-            //whiteKeyContainer.setAlignment(Pos.BASELINE_CENTER);
             whiteKeyContainer.getChildren().addAll(whiteKey, noteLabel);
             whiteKeys[i] = whiteKeyContainer;
             int key = Integer.parseInt(midiNotes.getProperty(whiteKey.getNote()));

@@ -27,6 +27,10 @@
     -fx-spacing: 30;
 }
 
+.channel-container {
+    -fx-spacing: 30;
+}
+
 .key {
 
 }

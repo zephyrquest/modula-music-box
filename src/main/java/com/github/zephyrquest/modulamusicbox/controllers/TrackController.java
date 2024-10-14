@@ -9,8 +9,6 @@ import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
 import javafx.scene.control.RadioButton;
 
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Track;
 import java.io.File;
 
 public class TrackController {
@@ -95,10 +93,8 @@ public class TrackController {
 
     private void changeTrack(File midiFile) {
         trackSequencer.setCurrentSequence(midiFile);
-        Sequence sequence = trackSequencer.getCurrentSequence();
-        Track[] tracks = sequence.getTracks();
-        channelsControls.updateView(tracks);
-        noteReceiver.setCurrentChannel(1);
+        channelsControls.updateView(trackSequencer.getChannels());
+        noteReceiver.setCurrentChannel(0);
     }
 
     private void changeChannelInTrack(int channelNumber) {

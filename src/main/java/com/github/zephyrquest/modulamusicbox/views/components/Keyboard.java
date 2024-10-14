@@ -1,7 +1,10 @@
 package com.github.zephyrquest.modulamusicbox.views.components;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,14 +45,20 @@ public class Keyboard extends StackPane {
         keys = new TreeMap<>();
         int totalWhiteKeys = whiteKeyNotes.length;
         int totalBlackKeys = blackKeyNotes.length;
-        WhiteKey[] whiteKeys = new WhiteKey[totalWhiteKeys];
+        VBox[] whiteKeys = new VBox[totalWhiteKeys];
         BlackKey[] blackKeys = new BlackKey[totalBlackKeys];
 
         HBox whiteKeysContainer = new HBox();
 
         for (int i = 0; i < totalWhiteKeys; i++) {
-            WhiteKey whiteKey = new WhiteKey(whiteKeyNotes[i % whiteKeyNotes.length], whiteKeyWidth, whiteKeyHeight);
-            whiteKeys[i] = whiteKey;
+            String note = whiteKeyNotes[i % whiteKeyNotes.length];
+            WhiteKey whiteKey = new WhiteKey(note, whiteKeyWidth, whiteKeyHeight);
+            Label noteLabel = new Label(note);
+            VBox whiteKeyContainer = new VBox();
+            whiteKeyContainer.getStyleClass().add("white-key-container");
+            //whiteKeyContainer.setAlignment(Pos.BASELINE_CENTER);
+            whiteKeyContainer.getChildren().addAll(whiteKey, noteLabel);
+            whiteKeys[i] = whiteKeyContainer;
             int key = Integer.parseInt(midiNotes.getProperty(whiteKey.getNote()));
             keys.put(key, whiteKey);
         }

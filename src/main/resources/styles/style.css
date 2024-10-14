@@ -19,6 +19,10 @@
     -fx-alignment: center;
 }
 
+.white-key-container {
+    -fx-alignment: baseline-center;
+}
+
 .buttons-container {
     -fx-spacing: 30;
 }

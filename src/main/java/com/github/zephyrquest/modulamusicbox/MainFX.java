@@ -1,8 +1,9 @@
 package com.github.zephyrquest.modulamusicbox;
 
 import com.github.zephyrquest.modulamusicbox.controllers.*;
+import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
 import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
-import com.github.zephyrquest.modulamusicbox.models.NoteReceiver;
+import com.github.zephyrquest.modulamusicbox.models.NoteReceiverFromSequencer;
 import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
 import com.github.zephyrquest.modulamusicbox.views.*;
 import com.github.zephyrquest.modulamusicbox.views.components.*;
@@ -15,12 +16,15 @@ import javafx.stage.Stage;
 
 public class MainFX extends Application {
     // Models
+    private KeyboardSynthesizer keyboardSynthesizer;
     private TrackSequencer trackSequencer;
     private MidiFileManager midiFileManager;
+    private NoteReceiverFromSequencer noteReceiverFromSequencer;
 
     // Controllers
     private ApplicationExitController applicationExitController;
     private TrackController trackController;
+    private KeyboardController keyboardController;
 
     // Views
     private MainView mainView;
@@ -49,14 +53,16 @@ public class MainFX extends Application {
             this.stage.getIcons().add(new Image(icon));
         }
 
-        trackSequencer = new TrackSequencer();
-        midiFileManager = new MidiFileManager();
-
         settingsMenu = new SettingsMenu();
         keyboard = new Keyboard();
         fileSelection = new FileSelection();
         trackControls = new TrackControls();
         channelsControls = new ChannelsControls();
+
+        keyboardSynthesizer = new KeyboardSynthesizer();
+        trackSequencer = new TrackSequencer();
+        midiFileManager = new MidiFileManager();
+        noteReceiverFromSequencer = new NoteReceiverFromSequencer(keyboard);
 
         VBox topContainerVBox = new VBox();
         topContainerVBox.getChildren().add(settingsMenu.getMenuBar());
@@ -75,8 +81,9 @@ public class MainFX extends Application {
         mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls, channelsControls);
 
         applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer);
-        trackController = new TrackController(trackSequencer, midiFileManager,
+        trackController = new TrackController(trackSequencer, midiFileManager, keyboardSynthesizer, noteReceiverFromSequencer,
                 fileSelection, keyboard, trackControls, channelsControls);
+        keyboardController = new KeyboardController(keyboardSynthesizer, keyboard);
 
         mainView.show();
 

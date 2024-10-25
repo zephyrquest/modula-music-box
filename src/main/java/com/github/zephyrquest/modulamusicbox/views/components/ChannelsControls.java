@@ -27,17 +27,13 @@ public class ChannelsControls extends VBox {
             HBox channelContainer = new HBox();
             channelContainer.getStyleClass().add("channel-container");
 
-            RadioButton radioButton = new RadioButton("Channel " + entry.getKey());
+            RadioButton radioButton = new RadioButton("Channel " + (entry.getKey() + 1));
             radioButton.setId(String.valueOf(entry.getKey()));
             radioButton.setToggleGroup(channelButtonsGroup);
             channelButtons.add(radioButton);
 
             Label instrumentsLabel = new Label();
-            StringBuilder stringBuilder = new StringBuilder();
-            entry.getValue().getInstruments().forEach(instrument -> {
-                stringBuilder.append(instrument).append(" ");
-            });
-            instrumentsLabel.setText(stringBuilder.toString());
+            instrumentsLabel.setText(entry.getValue().getInstrument());
 
             channelContainer.getChildren().addAll(radioButton, instrumentsLabel);
             this.getChildren().addAll(channelContainer);

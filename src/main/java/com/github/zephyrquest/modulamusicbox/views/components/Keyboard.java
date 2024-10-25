@@ -88,6 +88,10 @@ public class Keyboard extends StackPane {
         this.getChildren().addAll(whiteKeysContainer, blackKeysContainer);
     }
 
+    public Map<Integer, Key> getKeys() {
+        return keys;
+    }
+
     public void pressKey(int keyNumber) {
         Key key = keys.get(keyNumber);
 

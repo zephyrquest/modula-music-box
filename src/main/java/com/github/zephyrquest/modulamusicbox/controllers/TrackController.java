@@ -1,7 +1,8 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
+import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
 import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
-import com.github.zephyrquest.modulamusicbox.models.NoteReceiver;
+import com.github.zephyrquest.modulamusicbox.models.NoteReceiverFromSequencer;
 import com.github.zephyrquest.modulamusicbox.models.TrackSequencer;
 import com.github.zephyrquest.modulamusicbox.views.components.ChannelsControls;
 import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
@@ -14,7 +15,8 @@ import java.io.File;
 public class TrackController {
     private final TrackSequencer trackSequencer;
     private final MidiFileManager midiFileManager;
-    private final NoteReceiver noteReceiver;
+    private final KeyboardSynthesizer keyboardSynthesizer;
+    private final NoteReceiverFromSequencer noteReceiverFromSequencer;
 
     private final FileSelection fileSelection;
     private final Keyboard keyboard;
@@ -23,16 +25,18 @@ public class TrackController {
 
 
     public TrackController(TrackSequencer trackSequencer, MidiFileManager midiFileManager,
+                           KeyboardSynthesizer keyboardSynthesizer, NoteReceiverFromSequencer noteReceiverFromSequencer,
                            FileSelection fileSelection, Keyboard keyboard, TrackControls trackControls,
                            ChannelsControls channelsControls) {
         this.trackSequencer = trackSequencer;
         this.midiFileManager = midiFileManager;
+        this.keyboardSynthesizer = keyboardSynthesizer;
         this.fileSelection = fileSelection;
         this.keyboard = keyboard;
         this.trackControls = trackControls;
         this.channelsControls = channelsControls;
-        this.noteReceiver = new NoteReceiver(this.keyboard);
-        this.trackSequencer.getTransmitter().setReceiver(this.noteReceiver);
+        this.noteReceiverFromSequencer = noteReceiverFromSequencer;
+        this.trackSequencer.getTransmitter().setReceiver(this.noteReceiverFromSequencer);
 
         setFileSelectionInView();
         setTrackControlsInView();
@@ -55,12 +59,12 @@ public class TrackController {
             String midiFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
             File midiFile = midiFileManager.getMidiFile(midiFileName);
             if(midiFile != null) {
-                noteReceiver.setActive(false);
+                noteReceiverFromSequencer.setActive(false);
                 keyboard.releaseAllKeys();
 
                 changeTrack(midiFile);
 
-                noteReceiver.setActive(true);
+                noteReceiverFromSequencer.setActive(true);
             }
         });
     }
@@ -79,25 +83,28 @@ public class TrackController {
         var channelButtonsGroup = channelsControls.getChannelButtonsGroup();
         channelButtonsGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             if(t1 != null) {
-                noteReceiver.setActive(false);
+                noteReceiverFromSequencer.setActive(false);
                 keyboard.releaseAllKeys();
 
                 RadioButton selectedChannelButton = (RadioButton) t1;
                 int channelNumber = Integer.parseInt(selectedChannelButton.getId());
                 changeChannelInTrack(channelNumber);
 
-                noteReceiver.setActive(true);
+                noteReceiverFromSequencer.setActive(true);
             }
         });
     }
 
     private void changeTrack(File midiFile) {
-        trackSequencer.setCurrentSequence(midiFile);
+        trackSequencer.setCurrentSequenceAndUpdateChannels(midiFile);
+        keyboardSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
         channelsControls.updateView(trackSequencer.getChannels());
-        noteReceiver.setCurrentChannel(0);
+        noteReceiverFromSequencer.setCurrentChannelNumber(0);
+        keyboardSynthesizer.setCurrentChannelNumber(0);
     }
 
     private void changeChannelInTrack(int channelNumber) {
-        noteReceiver.setCurrentChannel(channelNumber);
+        noteReceiverFromSequencer.setCurrentChannelNumber(channelNumber);
+        keyboardSynthesizer.setCurrentChannelNumber(channelNumber);
     }
 }

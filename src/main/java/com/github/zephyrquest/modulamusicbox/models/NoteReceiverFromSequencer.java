@@ -2,18 +2,17 @@ package com.github.zephyrquest.modulamusicbox.models;
 
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
+import javax.sound.midi.*;
 
-public class NoteReceiver implements Receiver {
+public class NoteReceiverFromSequencer implements Receiver {
 
     private final Keyboard keyboard;
-    private int currentChannel;
+    private int currentChannelNumber;
     private boolean active;
 
-    public NoteReceiver(Keyboard keyboard) {
+    public NoteReceiverFromSequencer(Keyboard keyboard) {
         this.keyboard = keyboard;
+        currentChannelNumber = -1;
         active = false;
     }
 
@@ -24,7 +23,7 @@ public class NoteReceiver implements Receiver {
         }
 
         if(message instanceof ShortMessage shortMessage) {
-            if(shortMessage.getChannel() == currentChannel) {
+            if(shortMessage.getChannel() == currentChannelNumber) {
                 int key = shortMessage.getData1();
                 int velocity = shortMessage.getData2();
                 if(shortMessage.getCommand() == ShortMessage.NOTE_ON && velocity > 0) {
@@ -42,8 +41,8 @@ public class NoteReceiver implements Receiver {
 
     }
 
-    public void setCurrentChannel(int currentChannel) {
-        this.currentChannel = currentChannel;
+    public void setCurrentChannelNumber(int currentChannelNumber) {
+        this.currentChannelNumber = currentChannelNumber;
     }
 
     public void setActive(boolean active) {

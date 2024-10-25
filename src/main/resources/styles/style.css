@@ -39,14 +39,6 @@
     -fx-fill: white;
 }
 
-.key.white-key:pressed {
-    -fx-fill: #dcdcff;
-}
-
 .key.black-key {
     -fx-fill: black;
-}
-
-.key.black-key:pressed {
-    -fx-fill: #dcdcff;
 }

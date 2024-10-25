@@ -12,11 +12,12 @@ public class TrackSequencer {
     private Sequence currentSequence;
     private Map<Integer, Channel> channels;
 
+
     public TrackSequencer() {
         initSequencer();
     }
 
-    public void setCurrentSequence(File file) {
+    public void setCurrentSequenceAndUpdateChannels(File file) {
         try {
             currentSequence = MidiSystem.getSequence(file);
             sequencer.setSequence(currentSequence);
@@ -69,41 +70,34 @@ public class TrackSequencer {
     }
 
     private void setUpChannels() {
-        if(currentSequence == null) {
+        if (currentSequence == null) {
             return;
         }
 
         channels = new TreeMap<>();
 
-        try {
-            Synthesizer synthesizer = MidiSystem.getSynthesizer();
-            Instrument[] availableInstruments = synthesizer.getAvailableInstruments();
+        Track[] tracks = currentSequence.getTracks();
 
-            Track[] tracks = currentSequence.getTracks();
+        for (int i = 0; i < tracks.length; i++) {
+            Track track = tracks[i];
 
-            for (int i = 0; i < tracks.length; i++) {
-                Track track = tracks[i];
-
-                for (int j = 0; j < track.size(); j++) {
-                    MidiEvent midiEvent = track.get(j);
-                    MidiMessage midiMessage = midiEvent.getMessage();
-                    if (midiMessage instanceof ShortMessage shortMessage
-                            && shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
-                        int channelNumber = shortMessage.getChannel();
-                        String instrumentName = availableInstruments[shortMessage.getData1()].getName().trim();
+            for (int j = 0; j < track.size(); j++) {
+                MidiEvent midiEvent = track.get(j);
+                MidiMessage midiMessage = midiEvent.getMessage();
+                if (midiMessage instanceof ShortMessage shortMessage
+                        && shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
+                    int channelNumber = shortMessage.getChannel();
+                    Instrument instrument = KeyboardSynthesizer.getInstrument(shortMessage.getData1());
+                    if (instrument != null) {
+                        String instrumentName = instrument.getName().trim();
                         Channel channel = channels.get(channelNumber);
                         if (channel == null) {
-                            Channel newChannel = new Channel();
-                            newChannel.getInstruments().add(instrumentName);
+                            Channel newChannel = new Channel(instrumentName);
                             channels.put(channelNumber, newChannel);
-                        } else if(!channel.getInstruments().contains(instrumentName)) {
-                            channel.getInstruments().add(instrumentName);
                         }
                     }
                 }
             }
-        } catch (MidiUnavailableException e) {
-            throw new RuntimeException(e);
         }
     }
 }

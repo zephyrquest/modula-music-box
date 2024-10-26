@@ -80,7 +80,7 @@ public class MainFX extends Application {
         borderPane.setTop(topContainerVBox);
         mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls, channelsControls);
 
-        applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer);
+        applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer, keyboardSynthesizer);
         trackController = new TrackController(trackSequencer, midiFileManager, keyboardSynthesizer, noteReceiverFromSequencer,
                 fileSelection, keyboard, trackControls, channelsControls);
         keyboardController = new KeyboardController(keyboardSynthesizer, keyboard);

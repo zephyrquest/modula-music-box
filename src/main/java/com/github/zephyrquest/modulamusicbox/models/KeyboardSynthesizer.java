@@ -72,6 +72,10 @@ public class KeyboardSynthesizer {
         synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
     }
 
+    public void closeSynthesizer() {
+        synthesizer.close();
+    }
+
     private void initSynthesizer() {
         try {
             synthesizer = MidiSystem.getSynthesizer();

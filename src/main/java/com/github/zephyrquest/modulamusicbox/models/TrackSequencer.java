@@ -18,6 +18,11 @@ public class TrackSequencer {
     }
 
     public void setCurrentSequenceAndUpdateChannels(File file) {
+        if(file == null) {
+            currentSequence = null;
+            return;
+        }
+
         try {
             currentSequence = MidiSystem.getSequence(file);
             sequencer.setSequence(currentSequence);
@@ -51,6 +56,14 @@ public class TrackSequencer {
         }
     }
 
+    public void cleanChannels() {
+        channels = new TreeMap<>();
+    }
+
+    public int getDefaultChannelNumber() {
+        return channels.keySet().iterator().next();
+    }
+
     public Transmitter getTransmitter() {
         return transmitter;
     }
@@ -73,8 +86,6 @@ public class TrackSequencer {
         if (currentSequence == null) {
             return;
         }
-
-        channels = new TreeMap<>();
 
         Track[] tracks = currentSequence.getTracks();
 

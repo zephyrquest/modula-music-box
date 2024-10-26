@@ -1,7 +1,6 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
 import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
-import com.github.zephyrquest.modulamusicbox.models.NoteReceiverFromSequencer;
 import com.github.zephyrquest.modulamusicbox.views.components.Key;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import javafx.scene.input.MouseEvent;

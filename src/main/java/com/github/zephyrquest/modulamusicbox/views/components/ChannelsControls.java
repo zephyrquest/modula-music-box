@@ -39,7 +39,9 @@ public class ChannelsControls extends VBox {
             this.getChildren().addAll(channelContainer);
         }
 
-        channelButtonsGroup.selectToggle(channelButtons.get(0));
+        if(!channelButtons.isEmpty()) {
+            channelButtonsGroup.selectToggle(channelButtons.get(0));
+        }
     }
 
     public ToggleGroup getChannelButtonsGroup() {

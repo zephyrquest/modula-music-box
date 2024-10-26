@@ -11,6 +11,7 @@ import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
 import javafx.scene.control.RadioButton;
 
 import java.io.File;
+import java.util.TreeMap;
 
 public class TrackController {
     private final TrackSequencer trackSequencer;
@@ -56,15 +57,22 @@ public class TrackController {
         midiFileComboBox.getSelectionModel().select("-");
 
         midiFileComboBox.setOnAction(event -> {
+            noteReceiverFromSequencer.setActive(false);
+            keyboardSynthesizer.setActive(false);
+            keyboard.releaseAllKeys();
+            trackSequencer.cleanChannels();
+            keyboardSynthesizer.unloadInstruments();
+
             String midiFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
             File midiFile = midiFileManager.getMidiFile(midiFileName);
             if(midiFile != null) {
-                noteReceiverFromSequencer.setActive(false);
-                keyboard.releaseAllKeys();
-
                 changeTrack(midiFile);
 
                 noteReceiverFromSequencer.setActive(true);
+                keyboardSynthesizer.setActive(true);
+            }
+            else {
+                removeTrack();
             }
         });
     }
@@ -84,6 +92,7 @@ public class TrackController {
         channelButtonsGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             if(t1 != null) {
                 noteReceiverFromSequencer.setActive(false);
+                keyboardSynthesizer.setActive(false);
                 keyboard.releaseAllKeys();
 
                 RadioButton selectedChannelButton = (RadioButton) t1;
@@ -91,6 +100,7 @@ public class TrackController {
                 changeChannelInTrack(channelNumber);
 
                 noteReceiverFromSequencer.setActive(true);
+                keyboardSynthesizer.setActive(true);
             }
         });
     }
@@ -99,8 +109,15 @@ public class TrackController {
         trackSequencer.setCurrentSequenceAndUpdateChannels(midiFile);
         keyboardSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
         channelsControls.updateView(trackSequencer.getChannels());
-        noteReceiverFromSequencer.setCurrentChannelNumber(0);
-        keyboardSynthesizer.setCurrentChannelNumber(0);
+
+        int defaultChannelNumber = trackSequencer.getDefaultChannelNumber();
+        noteReceiverFromSequencer.setCurrentChannelNumber(defaultChannelNumber);
+        keyboardSynthesizer.setCurrentChannelNumber(defaultChannelNumber);
+    }
+
+    private void removeTrack() {
+        trackSequencer.setCurrentSequenceAndUpdateChannels(null);
+        channelsControls.updateView(new TreeMap<>());
     }
 
     private void changeChannelInTrack(int channelNumber) {

@@ -11,12 +11,13 @@ public class KeyboardSynthesizer {
     private MidiChannel[] midiChannels;
     private int currentChannelNumber;
     private int currentVelocity;
+    private boolean active;
 
 
     public KeyboardSynthesizer() {
         initSynthesizer();
-        currentChannelNumber = -1;
         currentVelocity = 200;
+        active = false;
     }
 
     public static Instrument getInstrument(int index) {
@@ -28,21 +29,25 @@ public class KeyboardSynthesizer {
     }
 
     public void playNode(int noteNumber) {
-        if (midiChannels != null && noteNumber >= 0
-                && currentChannelNumber >= 0 && currentChannelNumber < midiChannels.length) {
+        if (midiChannels != null && active && noteNumber >= 0
+                && currentChannelNumber < midiChannels.length) {
             midiChannels[currentChannelNumber].noteOn(noteNumber, currentVelocity);
         }
     }
 
     public void stopNote(int noteNumber) {
         if(midiChannels != null && noteNumber > 0
-                && currentChannelNumber >= 0 && currentChannelNumber < midiChannels.length) {
+                 && currentChannelNumber < midiChannels.length) {
             midiChannels[currentChannelNumber].noteOff(noteNumber);
         }
     }
 
     public void setCurrentChannelNumber(int currentChannelNumber) {
         this.currentChannelNumber = currentChannelNumber;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setInstrumentsInChannels(Map<Integer, Channel> channels) {
@@ -61,6 +66,10 @@ public class KeyboardSynthesizer {
                 }
             }
         }
+    }
+
+    public void unloadInstruments() {
+        synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
     }
 
     private void initSynthesizer() {

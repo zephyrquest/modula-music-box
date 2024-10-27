@@ -10,8 +10,10 @@ import com.github.zephyrquest.modulamusicbox.views.components.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class MainFX extends Application {
@@ -48,6 +50,8 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
+        stage.setResizable(false);
+        stage.setFullScreen(false);
 
         stage.setTitle("ModulaMusicBox");
         var icon = getClass().getResourceAsStream("/images/modulamusicbox.png");
@@ -70,6 +74,7 @@ public class MainFX extends Application {
         topContainerVBox.getChildren().add(settingsMenu.getMenuBar());
 
         borderPane = new BorderPane();
+        borderPane.getStyleClass().add("border-pane");
 
         scene = new Scene(borderPane, 1200, 800);
         var styleSheet = getClass().getResource("/styles/style.css");

@@ -1,3 +1,14 @@
+* {
+    -fx-font-family: Impact
+}
+
+.border-pane {
+    -fx-background-image: url("/images/background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
 .main-view-container {
     -fx-alignment: center;
     -fx-spacing: 20;
@@ -31,8 +42,17 @@
     -fx-spacing: 30;
 }
 
-.key {
+.file-selection-inner-container {
+    -fx-spacing: 20;
+}
 
+.file-input-container {
+    -fx-spacing: 10;
+    -fx-alignment: baseline-center;
+}
+
+.key {
+    -fx-cursor: hand;
 }
 
 .key.white-key {
@@ -41,4 +61,84 @@
 
 .key.black-key {
     -fx-fill: black;
+}
+
+.midi-file-combo-box {
+    -fx-background-color: black;
+    -fx-border-color: black;
+    -fx-cursor: hand;
+}
+
+.midi-file-combo-box .list-cell, .combo-box {
+    -fx-cursor: hand;
+}
+
+.midi-file-combo-box .list-cell, .combo-box .text-field {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.select-file-button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.selected-file-label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.rewind-button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-pref-width: 100;
+    -fx-cursor: hand;
+}
+
+.play-button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-pref-width: 100;
+    -fx-cursor: hand;
+}
+
+.stop-button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-pref-width: 100;
+    -fx-cursor: hand;
+}
+
+.channel-radio-button {
+    -fx-font-size: 16;
+    -fx-cursor: hand;
+}
+
+.instrument-label {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.note-label {
+    -fx-font-size: 14;
 }

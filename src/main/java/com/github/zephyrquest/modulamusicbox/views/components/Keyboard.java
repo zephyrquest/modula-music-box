@@ -53,6 +53,7 @@ public class Keyboard extends StackPane {
             String note = whiteKeyNotes[i % whiteKeyNotes.length];
             WhiteKey whiteKey = new WhiteKey(note, whiteKeyWidth, whiteKeyHeight);
             Label noteLabel = new Label(note);
+            noteLabel.getStyleClass().add("note-label");
             VBox whiteKeyContainer = new VBox();
             whiteKeyContainer.getStyleClass().add("white-key-container");
             whiteKeyContainer.getChildren().addAll(whiteKey, noteLabel);

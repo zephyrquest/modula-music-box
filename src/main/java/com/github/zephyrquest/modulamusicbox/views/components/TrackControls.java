@@ -12,8 +12,11 @@ public class TrackControls extends VBox {
 
     public TrackControls() {
         playButton = new Button("Play");
+        playButton.getStyleClass().add("play-button");
         stopButton = new Button("Stop");
+        stopButton.getStyleClass().add("stop-button");
         rewindButton = new Button("Rewind");
+        rewindButton.getStyleClass().add("rewind-button");
 
         HBox buttonsContainer = new HBox();
         buttonsContainer.getStyleClass().add("buttons-container");

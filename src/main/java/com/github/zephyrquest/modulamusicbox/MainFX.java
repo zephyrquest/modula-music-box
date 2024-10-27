@@ -10,11 +10,11 @@ import com.github.zephyrquest.modulamusicbox.views.components.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.io.InputStream;
 
 public class MainFX extends Application {
     public static Stage stage;
@@ -38,7 +38,6 @@ public class MainFX extends Application {
     private TrackControls trackControls;
     private ChannelsControls channelsControls;
 
-    //private Stage stage;
     private Scene scene;
     private BorderPane borderPane;
 
@@ -76,6 +75,11 @@ public class MainFX extends Application {
         borderPane = new BorderPane();
         borderPane.getStyleClass().add("border-pane");
 
+        var backgroundImage = getBackgroundImage();
+        if(backgroundImage != null) {
+            borderPane.setBackground(new Background(backgroundImage));
+        }
+
         scene = new Scene(borderPane, 1200, 800);
         var styleSheet = getClass().getResource("/styles/style.css");
         if(styleSheet != null) {
@@ -95,5 +99,22 @@ public class MainFX extends Application {
         mainView.show();
 
        stage.show();
+    }
+
+    private BackgroundImage getBackgroundImage() {
+        var backgroundStream = getClass().getResourceAsStream("/images/background.jpg");
+
+        if(backgroundStream == null) {
+            return null;
+        }
+
+        Image backgroundImage = new Image(backgroundStream);
+        return new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
     }
 }

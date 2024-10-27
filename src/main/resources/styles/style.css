@@ -2,13 +2,6 @@
     -fx-font-family: Impact
 }
 
-.border-pane {
-    -fx-background-image: url("/images/background.jpg");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center;
-}
-
 .main-view-container {
     -fx-alignment: center;
     -fx-spacing: 20;
@@ -103,7 +96,7 @@
     -fx-font-size: 18;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-pref-width: 100;
+    -fx-pref-width: 120;
     -fx-cursor: hand;
 }
 
@@ -114,7 +107,7 @@
     -fx-font-size: 18;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-pref-width: 100;
+    -fx-pref-width: 120;
     -fx-cursor: hand;
 }
 
@@ -125,7 +118,7 @@
     -fx-font-size: 18;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-pref-width: 100;
+    -fx-pref-width: 120;
     -fx-cursor: hand;
 }
 

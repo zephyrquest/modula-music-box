@@ -71,7 +71,12 @@ public class TrackController {
             if(midiFile != null) {
                 fileSelection.getSelectedFileLabel().setText("");
 
-                changeTrack(midiFile);
+                try {
+                    changeTrack(midiFile);
+                }
+                catch (Exception ex) {
+                    removeTrack();
+                }
 
                 noteReceiverFromSequencer.setActive(true);
                 keyboardSynthesizer.setActive(true);
@@ -100,10 +105,17 @@ public class TrackController {
 
                 midiFileComboBox.getSelectionModel().selectFirst();
                 fileSelection.getSelectedFileLabel().setText(selectedFile.getName());
-                changeTrack(selectedFile);
 
-                noteReceiverFromSequencer.setActive(true);
-                keyboardSynthesizer.setActive(true);
+                try {
+                    changeTrack(selectedFile);
+
+                    noteReceiverFromSequencer.setActive(true);
+                    keyboardSynthesizer.setActive(true);
+                }
+                catch (Exception ex) {
+                    removeTrack();
+                    fileSelection.getSelectedFileLabel().setText("");
+                }
             }
         });
     }
@@ -136,8 +148,9 @@ public class TrackController {
         });
     }
 
-    private void changeTrack(File midiFile) {
-        trackSequencer.setCurrentSequenceAndUpdateChannels(midiFile);
+    private void changeTrack(File midiFile) throws Exception {
+        trackSequencer.updateCurrentSequence(midiFile);
+        trackSequencer.updateChannels();
         keyboardSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
         channelsControls.updateView(trackSequencer.getChannels());
 
@@ -147,7 +160,8 @@ public class TrackController {
     }
 
     private void removeTrack() {
-        trackSequencer.setCurrentSequenceAndUpdateChannels(null);
+        trackSequencer.removeCurrentSequence();
+        trackSequencer.updateChannels();
         channelsControls.updateView(new TreeMap<>());
     }
 

@@ -2,7 +2,6 @@ package com.github.zephyrquest.modulamusicbox.models;
 
 import javax.sound.midi.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,35 +16,25 @@ public class TrackSequencer {
         initSequencer();
     }
 
-    public void setCurrentSequenceAndUpdateChannels(File file) {
-        if(file == null) {
-            currentSequence = null;
-            return;
-        }
-
-        try {
-            currentSequence = MidiSystem.getSequence(file);
-            sequencer.setSequence(currentSequence);
-            setUpChannels();
-        } catch (InvalidMidiDataException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void updateCurrentSequence(File file) throws Exception {
+        currentSequence = MidiSystem.getSequence(file);
+        sequencer.setSequence(currentSequence);
     }
 
     public void startSequencer() {
-        if(sequencer.isOpen() && sequencer.getSequence() != null) {
+        if(sequencer.isOpen() && sequencer.getSequence() != null && currentSequence!= null) {
             sequencer.start();
         }
     }
 
     public void stopSequencer() {
-        if(sequencer.isOpen()) {
+        if(sequencer.isOpen() && currentSequence!= null) {
             sequencer.stop();
         }
     }
 
     public void rewindSequencer() {
-        if(sequencer.isOpen()) {
+        if(sequencer.isOpen() && currentSequence!= null) {
             sequencer.setTickPosition(0);
         }
     }
@@ -56,33 +45,7 @@ public class TrackSequencer {
         }
     }
 
-    public void cleanChannels() {
-        channels = new TreeMap<>();
-    }
-
-    public int getDefaultChannelNumber() {
-        return channels.keySet().iterator().next();
-    }
-
-    public Transmitter getTransmitter() {
-        return transmitter;
-    }
-
-    public Map<Integer, Channel> getChannels() {
-        return channels;
-    }
-
-    private void initSequencer() {
-        try {
-            sequencer = MidiSystem.getSequencer();
-            sequencer.open();
-            transmitter = sequencer.getTransmitter();
-        } catch (MidiUnavailableException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void setUpChannels() {
+    public void updateChannels() {
         if (currentSequence == null) {
             return;
         }
@@ -109,6 +72,36 @@ public class TrackSequencer {
                     }
                 }
             }
+        }
+    }
+
+    public void removeCurrentSequence() {
+        currentSequence = null;
+    }
+
+    public void cleanChannels() {
+        channels = new TreeMap<>();
+    }
+
+    public int getDefaultChannelNumber() {
+        return channels.keySet().iterator().next();
+    }
+
+    public Transmitter getTransmitter() {
+        return transmitter;
+    }
+
+    public Map<Integer, Channel> getChannels() {
+        return channels;
+    }
+
+    private void initSequencer() {
+        try {
+            sequencer = MidiSystem.getSequencer();
+            sequencer.open();
+            transmitter = sequencer.getTransmitter();
+        } catch (MidiUnavailableException e) {
+            throw new RuntimeException(e);
         }
     }
 }

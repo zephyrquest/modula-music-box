@@ -15,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainFX extends Application {
+    public static Stage stage;
+
     // Models
     private KeyboardSynthesizer keyboardSynthesizer;
     private TrackSequencer trackSequencer;
@@ -34,7 +36,7 @@ public class MainFX extends Application {
     private TrackControls trackControls;
     private ChannelsControls channelsControls;
 
-    private Stage stage;
+    //private Stage stage;
     private Scene scene;
     private BorderPane borderPane;
 
@@ -44,13 +46,13 @@ public class MainFX extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        this.stage = stage;
+    public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
 
-        this.stage.setTitle("ModulaMusicBox");
+        stage.setTitle("ModulaMusicBox");
         var icon = getClass().getResourceAsStream("/images/modulamusicbox.png");
         if(icon != null) {
-            this.stage.getIcons().add(new Image(icon));
+            stage.getIcons().add(new Image(icon));
         }
 
         settingsMenu = new SettingsMenu();
@@ -75,18 +77,18 @@ public class MainFX extends Application {
             scene.getStylesheets().add(styleSheet.toExternalForm());
         }
 
-        this.stage.setScene(scene);
+        stage.setScene(scene);
 
         borderPane.setTop(topContainerVBox);
-        mainView = new MainView(this.stage, scene, borderPane, keyboard, fileSelection, trackControls, channelsControls);
+        mainView = new MainView(borderPane, keyboard, fileSelection, trackControls, channelsControls);
 
-        applicationExitController = new ApplicationExitController(this.stage, settingsMenu, trackSequencer, keyboardSynthesizer);
+        applicationExitController = new ApplicationExitController(settingsMenu, trackSequencer, keyboardSynthesizer);
         trackController = new TrackController(trackSequencer, midiFileManager, keyboardSynthesizer, noteReceiverFromSequencer,
                 fileSelection, keyboard, trackControls, channelsControls);
         keyboardController = new KeyboardController(keyboardSynthesizer, keyboard);
 
         mainView.show();
 
-        this.stage.show();
+       stage.show();
     }
 }

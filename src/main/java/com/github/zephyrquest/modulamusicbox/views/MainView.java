@@ -4,15 +4,11 @@ import com.github.zephyrquest.modulamusicbox.views.components.ChannelsControls;
 import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class MainView {
-    private final Stage stage;
-    private final Scene scene;
     private final BorderPane borderPane;
     private final Keyboard keyboard;
     private final FileSelection fileSelection;
@@ -20,10 +16,8 @@ public class MainView {
     private final ChannelsControls channelsControls;
 
 
-    public MainView(Stage stage, Scene scene, BorderPane borderPane, Keyboard keyboard, FileSelection fileSelection,
+    public MainView(BorderPane borderPane, Keyboard keyboard, FileSelection fileSelection,
                     TrackControls trackControls, ChannelsControls channelsControls) {
-        this.stage = stage;
-        this.scene = scene;
         this.borderPane = borderPane;
         this.keyboard = keyboard;
         this.fileSelection = fileSelection;

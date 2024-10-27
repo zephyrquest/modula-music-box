@@ -1,5 +1,6 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
+import com.github.zephyrquest.modulamusicbox.MainFX;
 import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
 import com.github.zephyrquest.modulamusicbox.models.MidiFileManager;
 import com.github.zephyrquest.modulamusicbox.models.NoteReceiverFromSequencer;
@@ -61,11 +62,15 @@ public class TrackController {
             keyboardSynthesizer.setActive(false);
             keyboard.releaseAllKeys();
             trackSequencer.cleanChannels();
+            trackSequencer.stopSequencer();
+            trackSequencer.rewindSequencer();
             keyboardSynthesizer.unloadInstruments();
 
             String midiFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
             File midiFile = midiFileManager.getMidiFile(midiFileName);
             if(midiFile != null) {
+                fileSelection.getSelectedFileLabel().setText("");
+
                 changeTrack(midiFile);
 
                 noteReceiverFromSequencer.setActive(true);
@@ -73,6 +78,32 @@ public class TrackController {
             }
             else {
                 removeTrack();
+            }
+        });
+
+        var fileChooser = fileSelection.getFileChooser();
+        var selectFileButton = fileSelection.getSelectFileButton();
+
+        selectFileButton.setOnAction(event -> {
+            File selectedFile = fileChooser.showOpenDialog(MainFX.stage);
+
+            if(selectedFile != null) {
+                midiFileComboBox.getSelectionModel().selectFirst();
+
+                noteReceiverFromSequencer.setActive(false);
+                keyboardSynthesizer.setActive(false);
+                keyboard.releaseAllKeys();
+                trackSequencer.cleanChannels();
+                trackSequencer.stopSequencer();
+                trackSequencer.rewindSequencer();
+                keyboardSynthesizer.unloadInstruments();
+
+                midiFileComboBox.getSelectionModel().selectFirst();
+                fileSelection.getSelectedFileLabel().setText(selectedFile.getName());
+                changeTrack(selectedFile);
+
+                noteReceiverFromSequencer.setActive(true);
+                keyboardSynthesizer.setActive(true);
             }
         });
     }

@@ -7,7 +7,8 @@ import java.util.TreeMap;
 
 public class TrackSequencer {
     private Sequencer sequencer;
-    private Transmitter transmitter;
+    private Transmitter transmitter1;
+    private Transmitter transmitter2;
     private Sequence currentSequence;
     private Map<Integer, Channel> channels;
 
@@ -61,7 +62,7 @@ public class TrackSequencer {
                 if (midiMessage instanceof ShortMessage shortMessage
                         && shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
                     int channelNumber = shortMessage.getChannel();
-                    Instrument instrument = KeyboardSynthesizer.getInstrument(shortMessage.getData1());
+                    Instrument instrument = TrackSynthesizer.getInstrument(shortMessage.getData1());
                     if (instrument != null) {
                         String instrumentName = instrument.getName().trim();
                         Channel channel = channels.get(channelNumber);
@@ -87,8 +88,12 @@ public class TrackSequencer {
         return channels.keySet().iterator().next();
     }
 
-    public Transmitter getTransmitter() {
-        return transmitter;
+    public Transmitter getTransmitter1() {
+        return transmitter1;
+    }
+
+    public Transmitter getTransmitter2() {
+        return transmitter2;
     }
 
     public Map<Integer, Channel> getChannels() {
@@ -97,9 +102,10 @@ public class TrackSequencer {
 
     private void initSequencer() {
         try {
-            sequencer = MidiSystem.getSequencer();
+            sequencer = MidiSystem.getSequencer(false);
             sequencer.open();
-            transmitter = sequencer.getTransmitter();
+            transmitter1 = sequencer.getTransmitter();
+            transmitter2 = sequencer.getTransmitter();
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }

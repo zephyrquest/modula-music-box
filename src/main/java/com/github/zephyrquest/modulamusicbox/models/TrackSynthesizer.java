@@ -4,20 +4,20 @@ import javax.sound.midi.*;
 import java.util.Arrays;
 import java.util.Map;
 
-public class KeyboardSynthesizer {
+public class TrackSynthesizer {
     private static Instrument[] availableInstruments;
-
     private Synthesizer synthesizer;
     private MidiChannel[] midiChannels;
+    private Receiver receiver;
     private int currentChannelNumber;
     private int currentVelocity;
-    private boolean active;
+    private boolean canUserInteract;
 
 
-    public KeyboardSynthesizer() {
+    public TrackSynthesizer() {
         initSynthesizer();
         currentVelocity = 200;
-        active = false;
+        canUserInteract = false;
     }
 
     public static Instrument getInstrument(int index) {
@@ -29,25 +29,23 @@ public class KeyboardSynthesizer {
     }
 
     public void playNode(int noteNumber) {
-        if (midiChannels != null && active && noteNumber >= 0
-                && currentChannelNumber < midiChannels.length) {
+        if(canUserInteract) {
             midiChannels[currentChannelNumber].noteOn(noteNumber, currentVelocity);
         }
     }
 
     public void stopNote(int noteNumber) {
-        if(midiChannels != null && noteNumber > 0
-                 && currentChannelNumber < midiChannels.length) {
+        if(canUserInteract) {
             midiChannels[currentChannelNumber].noteOff(noteNumber);
         }
     }
 
-    public void setCurrentChannelNumber(int currentChannelNumber) {
-        this.currentChannelNumber = currentChannelNumber;
+    public void closeSynthesizer() {
+        synthesizer.close();
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void unloadAllInstrumentsFromSynthesizer() {
+        synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
     }
 
     public void setInstrumentsInChannels(Map<Integer, Channel> channels) {
@@ -68,12 +66,21 @@ public class KeyboardSynthesizer {
         }
     }
 
-    public void unloadInstruments() {
-        synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
+    public Receiver getReceiver() {
+        return receiver;
     }
 
-    public void closeSynthesizer() {
-        synthesizer.close();
+    public void setCurrentChannelNumber(int currentChannelNumber) {
+        if(currentChannelNumber >= midiChannels.length) {
+            this.currentChannelNumber = 0;
+        }
+        else {
+            this.currentChannelNumber = currentChannelNumber;
+        }
+    }
+
+    public void setCanUserInteract(boolean canUserInteract) {
+        this.canUserInteract = canUserInteract;
     }
 
     private void initSynthesizer() {
@@ -81,6 +88,7 @@ public class KeyboardSynthesizer {
             synthesizer = MidiSystem.getSynthesizer();
             synthesizer.open();
             midiChannels = synthesizer.getChannels();
+            receiver = synthesizer.getReceiver();
             availableInstruments = synthesizer.getAvailableInstruments();
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);

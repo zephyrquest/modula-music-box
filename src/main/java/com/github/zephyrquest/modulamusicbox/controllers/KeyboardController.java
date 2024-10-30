@@ -1,17 +1,18 @@
 package com.github.zephyrquest.modulamusicbox.controllers;
 
-import com.github.zephyrquest.modulamusicbox.models.KeyboardSynthesizer;
+import com.github.zephyrquest.modulamusicbox.models.TrackSynthesizer;
 import com.github.zephyrquest.modulamusicbox.views.components.Key;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import javafx.scene.input.MouseEvent;
 
 public class KeyboardController {
-    private final KeyboardSynthesizer keyboardSynthesizer;
+    private final TrackSynthesizer trackSynthesizer;
     private final Keyboard keyboard;
 
 
-    public KeyboardController(KeyboardSynthesizer keyboardSynthesizer, Keyboard keyboard) {
-        this.keyboardSynthesizer = keyboardSynthesizer;
+    public KeyboardController(TrackSynthesizer trackSynthesizer,
+                              Keyboard keyboard) {
+        this.trackSynthesizer = trackSynthesizer;
         this.keyboard = keyboard;
 
         setKeyboardInView();
@@ -26,11 +27,11 @@ public class KeyboardController {
 
     private void pressKey(Key key, int noteNumber) {
         key.press();
-        keyboardSynthesizer.playNode(noteNumber);
+        trackSynthesizer.playNode(noteNumber);
     }
 
     private void releaseKey(Key key, int noteNumber) {
         key.release();
-        keyboardSynthesizer.stopNote(noteNumber);
+        trackSynthesizer.stopNote(noteNumber);
     }
 }

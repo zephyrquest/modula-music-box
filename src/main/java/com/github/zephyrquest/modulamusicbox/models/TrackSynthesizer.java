@@ -48,6 +48,42 @@ public class TrackSynthesizer {
         synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
     }
 
+    public void muteChannel(int channelNumber) {
+        if(channelNumber < midiChannels.length) {
+            midiChannels[channelNumber].setMute(true);
+        }
+    }
+
+    public void unmuteChannel(int channelNumber) {
+        if(channelNumber < midiChannels.length) {
+            midiChannels[channelNumber].setMute(false);
+        }
+    }
+
+    public void unmuteAllChannels() {
+        for(var midiChannel : midiChannels) {
+            midiChannel.setMute(false);
+        }
+    }
+
+    public void soloChannel(int channelNumber) {
+        if(channelNumber < midiChannels.length) {
+            midiChannels[channelNumber].setSolo(true);
+        }
+    }
+
+    public void unsoloChannel(int channelNumber) {
+        if(channelNumber < midiChannels.length) {
+            midiChannels[channelNumber].setSolo(false);
+        }
+    }
+
+    public void unsoloAllChannels() {
+        for(var midiChannel : midiChannels) {
+            midiChannel.setSolo(false);
+        }
+    }
+
     public void setInstrumentsInChannels(Map<Integer, Channel> channels) {
         for(var entry : channels.entrySet()) {
             int channelNumber = entry.getKey();

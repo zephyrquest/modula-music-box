@@ -37,6 +37,7 @@
 
 .file-selection-inner-container {
     -fx-spacing: 20;
+    -fx-alignment: center;
 }
 
 .file-input-container {
@@ -87,6 +88,7 @@
     -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-font-size: 14;
+    -fx-max-width: 200;
 }
 
 .rewind-button {

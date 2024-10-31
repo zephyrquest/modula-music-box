@@ -11,15 +11,19 @@ public class TrackSequencer {
     private Transmitter transmitter2;
     private Sequence currentSequence;
     private Map<Integer, Channel> channels;
+    private int defaultTempoBpm;
 
 
     public TrackSequencer() {
         initSequencer();
+
+        defaultTempoBpm = 0;
     }
 
     public void updateCurrentSequence(File file) throws Exception {
         currentSequence = MidiSystem.getSequence(file);
         sequencer.setSequence(currentSequence);
+        defaultTempoBpm = (int) sequencer.getTempoInBPM();
     }
 
     public void startSequencer() {
@@ -78,10 +82,20 @@ public class TrackSequencer {
 
     public void removeCurrentSequence() {
         currentSequence = null;
+
+        defaultTempoBpm = 0;
     }
 
     public void cleanChannels() {
         channels = new TreeMap<>();
+    }
+
+    public int getDefaultTempoBpm() {
+        return defaultTempoBpm;
+    }
+
+    public void updateTempoBpm(int bpm) {
+        sequencer.setTempoInBPM(bpm);
     }
 
     public int getDefaultChannelNumber() {

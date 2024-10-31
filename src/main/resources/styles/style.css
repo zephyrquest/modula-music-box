@@ -135,3 +135,24 @@
 .note-label {
     -fx-font-size: 14;
 }
+
+.bpm-container {
+    -fx-alignment: baseline-center;
+    -fx-spacing: 5;
+}
+
+.bpm-label {
+    -fx-text-fill: black;
+    -fx-font-size: 14;
+}
+
+.bpm-text-field {
+    -fx-text-fill: white;
+    -fx-background-color: black;
+    -fx-font-size: 14;
+    -fx-pref-width: 50;
+}
+
+.track-controls {
+    -fx-spacing: 20;
+}

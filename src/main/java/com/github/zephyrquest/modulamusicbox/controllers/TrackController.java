@@ -58,6 +58,28 @@ public class TrackController {
         playButton.setOnAction(event -> trackSequencer.startSequencer());
         stopButton.setOnAction(event -> trackSequencer.stopSequencer());
         rewindButton.setOnAction(event -> trackSequencer.rewindSequencer());
+
+        var bpmTextfield = trackControls.getBpmTextField();
+        bpmTextfield.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if(newValue.isEmpty()) {
+                return;
+            }
+
+            if (!newValue.matches("\\d*")) {
+                newValue = newValue.replaceAll("\\D", "");
+                bpmTextfield.setText(newValue);
+            }
+
+            int newBpm = Integer.parseInt(newValue);
+            int defaultBpm = trackSequencer.getDefaultTempoBpm();
+
+            if(newBpm == 0 || newBpm > 240) {
+                newBpm = defaultBpm;
+                bpmTextfield.setText(String.valueOf(newBpm));
+            }
+
+            trackSequencer.updateTempoBpm(newBpm);
+        });
     }
 
     private void setChannelsControlsInView() {
@@ -81,12 +103,10 @@ public class TrackController {
     private void changeTrack(File midiFile) throws Exception {
         trackSequencer.updateCurrentSequence(midiFile);
         trackSequencer.updateChannels();
+
         trackSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
         trackSynthesizer.unmuteAllChannels();
         trackSynthesizer.unsoloAllChannels();
-        channelsControls.updateView(trackSequencer.getChannels());
-        handleMuteChannelCheckboxes();
-        handleSoloChannelCheckBoxes();
 
         int defaultChannelNumber = trackSequencer.getDefaultChannelNumber();
         noteReceiverFromSequencer.setCurrentChannelNumber(defaultChannelNumber);
@@ -134,16 +154,28 @@ public class TrackController {
 
                 try {
                     changeTrack(midiFile);
+
+                    channelsControls.updateView(trackSequencer.getChannels());
+                    handleMuteChannelCheckboxes();
+                    handleSoloChannelCheckBoxes();
+
+                    float defaultBpm = trackSequencer.getDefaultTempoBpm();
+                    trackControls.updateBpm((int) defaultBpm);
+                    trackControls.showBpm();
+
+                    noteReceiverFromSequencer.setActive(true);
+                    trackSynthesizer.setCanUserInteract(true);
                 }
                 catch (Exception ex) {
                     removeTrack();
-                }
 
-                noteReceiverFromSequencer.setActive(true);
-                trackSynthesizer.setCanUserInteract(true);
+                    trackControls.hideBpm();
+                }
             }
             else {
                 removeTrack();
+
+                trackControls.hideBpm();
             }
         });
     }
@@ -173,12 +205,22 @@ public class TrackController {
                 try {
                     changeTrack(selectedFile);
 
+                    channelsControls.updateView(trackSequencer.getChannels());
+                    handleMuteChannelCheckboxes();
+                    handleSoloChannelCheckBoxes();
+
+                    float defaultBpm = trackSequencer.getDefaultTempoBpm();
+                    trackControls.updateBpm((int) defaultBpm);
+                    trackControls.showBpm();
+
                     noteReceiverFromSequencer.setActive(true);
                     trackSynthesizer.setCanUserInteract(true);
                 }
                 catch (Exception ex) {
                     removeTrack();
+
                     fileSelection.getSelectedFileLabel().setText("");
+                    trackControls.hideBpm();
                 }
             }
         });

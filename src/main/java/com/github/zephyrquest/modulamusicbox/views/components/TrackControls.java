@@ -1,6 +1,8 @@
 package com.github.zephyrquest.modulamusicbox.views.components;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -10,6 +12,8 @@ public class TrackControls extends VBox {
     private final Button playButton;
     private final Button stopButton;
     private final Button rewindButton;
+    private final HBox bpmContainer;
+    private final TextField bpmTextField;
 
 
     public TrackControls() {
@@ -46,11 +50,22 @@ public class TrackControls extends VBox {
         }
         rewindButton.getStyleClass().add("rewind-button");
 
+        Label bpmLabel = new Label("BPM");
+        bpmLabel.getStyleClass().add("bpm-label");
+        bpmTextField = new TextField();
+        bpmTextField.getStyleClass().add("bpm-text-field");
+
         HBox buttonsContainer = new HBox();
         buttonsContainer.getStyleClass().add("buttons-container");
         buttonsContainer.getChildren().addAll(rewindButton, playButton, stopButton);
 
-        this.getChildren().add(buttonsContainer);
+        bpmContainer = new HBox();
+        bpmContainer.getStyleClass().add("bpm-container");
+        bpmContainer.setVisible(false);
+        bpmContainer.getChildren().addAll(bpmLabel, bpmTextField);
+
+        this.getChildren().addAll(buttonsContainer, bpmContainer);
+        this.getStyleClass().add("track-controls");
     }
 
     public Button getPlayButton() {
@@ -63,5 +78,21 @@ public class TrackControls extends VBox {
 
     public Button getRewindButton() {
         return rewindButton;
+    }
+
+    public TextField getBpmTextField() {
+        return bpmTextField;
+    }
+
+    public void showBpm() {
+        bpmContainer.setVisible(true);
+    }
+
+    public void hideBpm() {
+        bpmContainer.setVisible(false);
+    }
+
+    public void updateBpm(int bpm) {
+        bpmTextField.setText(String.valueOf(bpm));
     }
 }

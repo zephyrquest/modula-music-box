@@ -12,3 +12,24 @@ keyboard to play your own notes!
 - **Interactive Keyboard**: Click on the digital keyboard to play notes manually and interact with the music.
 
 ![ModulaMusicBox](doc/modulamusicbox.png)
+
+## Requirements
+
+- Java 7 or above.
+
+## Installation
+
+1. Clone repository:
+    ```bash
+    git clone https://github.com/zephyrquest/modula-music-box.git
+    ```
+
+2. Move inside root folder:
+    ```bash
+    cd modula-music-box
+    ```
+
+3. Start the application
+    ```bash
+    java -jar ModulaMusicBox.jar
+    ```

@@ -42,9 +42,11 @@ public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        String environment = System.getenv("env");
+
         stage = primaryStage;
         stage.setResizable(true);
-        stage.setFullScreen(true);
+        stage.setFullScreen(!"development".equals(environment));
 
         stage.setTitle("ModulaMusicBox");
         var icon = getClass().getResourceAsStream("/images/modulamusicbox.png");

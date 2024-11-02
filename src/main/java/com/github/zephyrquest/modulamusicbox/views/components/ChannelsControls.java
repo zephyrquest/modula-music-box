@@ -45,7 +45,11 @@ public class ChannelsControls extends VBox {
 
             Label instrumentLabel = new Label();
             instrumentLabel.getStyleClass().add("instrument-label");
-            instrumentLabel.setText(entry.getValue().getInstrument());
+            StringBuilder sb = new StringBuilder();
+            for(var instrumentName : entry.getValue().getInstruments()) {
+                sb.append(instrumentName).append("\t");
+            }
+            instrumentLabel.setText(sb.toString());
 
             CheckBox muteChannelCheckBox = new CheckBox("Mute");
             muteChannelCheckBox.setId(id);

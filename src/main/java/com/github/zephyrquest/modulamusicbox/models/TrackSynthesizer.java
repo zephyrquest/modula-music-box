@@ -45,7 +45,22 @@ public class TrackSynthesizer {
     }
 
     public void unloadAllInstrumentsFromSynthesizer() {
-        synthesizer.unloadAllInstruments(synthesizer.getDefaultSoundbank());
+        for (int i = 0; i < midiChannels.length; i++) {
+            if (i == 9) {
+                continue;
+            }
+
+            int bank = midiChannels[i].getController(0);
+            int program = midiChannels[i].getProgram();
+
+            for (Instrument instrument : availableInstruments) {
+                Patch patch = instrument.getPatch();
+                if (patch.getBank() == bank && patch.getProgram() == program) {
+                    synthesizer.unloadInstrument(instrument);
+                    break;
+                }
+            }
+        }
     }
 
     public void muteChannel(int channelNumber) {
@@ -87,16 +102,24 @@ public class TrackSynthesizer {
     public void setInstrumentsInChannels(Map<Integer, Channel> channels) {
         for(var entry : channels.entrySet()) {
             int channelNumber = entry.getKey();
-            String instrumentName = entry.getValue().getInstrument();
+
+            if (channelNumber == 9) {
+                continue;
+            }
+
+            var instrumentNames = entry.getValue().getInstruments();
 
             if(channelNumber >= 0 && channelNumber < midiChannels.length) {
-                var instrumentOpt = Arrays.stream(availableInstruments)
-                        .filter(instrument -> instrument.getName().trim().equals(instrumentName))
-                        .findFirst();
-                if(instrumentOpt.isPresent()) {
-                    synthesizer.loadInstrument(instrumentOpt.get());
-                    midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
-                            instrumentOpt.get().getPatch().getProgram());
+                for(var instrumentName : instrumentNames) {
+                    var instrumentOpt = Arrays.stream(availableInstruments)
+                            .filter(instrument -> instrument.getName().trim().equals(instrumentName))
+                            .findFirst();
+
+                    if(instrumentOpt.isPresent()) {
+                        synthesizer.loadInstrument(instrumentOpt.get());
+                        midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
+                                instrumentOpt.get().getPatch().getProgram());
+                    }
                 }
             }
         }
@@ -125,7 +148,7 @@ public class TrackSynthesizer {
             synthesizer.open();
             midiChannels = synthesizer.getChannels();
             receiver = synthesizer.getReceiver();
-            availableInstruments = synthesizer.getAvailableInstruments();
+            availableInstruments = synthesizer.getDefaultSoundbank().getInstruments();
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }

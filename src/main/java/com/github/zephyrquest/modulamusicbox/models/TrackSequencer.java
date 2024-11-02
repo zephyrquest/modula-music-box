@@ -63,21 +63,32 @@ public class TrackSequencer {
             for (int j = 0; j < track.size(); j++) {
                 MidiEvent midiEvent = track.get(j);
                 MidiMessage midiMessage = midiEvent.getMessage();
-                if (midiMessage instanceof ShortMessage shortMessage
-                        && shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
+                if (midiMessage instanceof ShortMessage shortMessage &&
+                        shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
                     int channelNumber = shortMessage.getChannel();
+                    if(channelNumber == 9) {
+                        continue;
+                    }
+
                     Instrument instrument = TrackSynthesizer.getInstrument(shortMessage.getData1());
                     if (instrument != null) {
                         String instrumentName = instrument.getName().trim();
                         Channel channel = channels.get(channelNumber);
                         if (channel == null) {
-                            Channel newChannel = new Channel(instrumentName);
+                            Channel newChannel = new Channel();
+                            newChannel.addInstrumentName(instrumentName);
                             channels.put(channelNumber, newChannel);
+                        } else if (!channel.getInstruments().contains(instrumentName)) {
+                            channel.addInstrumentName(instrumentName);
                         }
                     }
                 }
             }
         }
+
+        Channel percussionChannel = new Channel();
+        percussionChannel.addInstrumentName("Percussion");
+        channels.put(9, percussionChannel);
     }
 
     public void removeCurrentSequence() {

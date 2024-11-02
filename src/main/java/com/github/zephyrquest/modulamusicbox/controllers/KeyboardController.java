@@ -26,12 +26,12 @@ public class KeyboardController {
     }
 
     private void pressKey(Key key, int noteNumber) {
-        key.press();
         trackSynthesizer.playNode(noteNumber);
+        key.press();
     }
 
     private void releaseKey(Key key, int noteNumber) {
-        key.release();
         trackSynthesizer.stopNote(noteNumber);
+        key.release();
     }
 }

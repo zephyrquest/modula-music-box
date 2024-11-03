@@ -56,6 +56,7 @@ public class TrackSequencer {
         }
 
         Track[] tracks = currentSequence.getTracks();
+        boolean percussionChannelPresent = false;
 
         for (int i = 0; i < tracks.length; i++) {
             Track track = tracks[i];
@@ -67,6 +68,10 @@ public class TrackSequencer {
                         shortMessage.getCommand() == ShortMessage.PROGRAM_CHANGE) {
                     int channelNumber = shortMessage.getChannel();
                     if(channelNumber == 9) {
+                        if(!percussionChannelPresent) {
+                            percussionChannelPresent = true;
+                        }
+
                         continue;
                     }
 
@@ -86,9 +91,11 @@ public class TrackSequencer {
             }
         }
 
-        Channel percussionChannel = new Channel();
-        percussionChannel.addInstrumentName("Percussion");
-        channels.put(9, percussionChannel);
+        if(percussionChannelPresent) {
+            Channel percussionChannel = new Channel();
+            percussionChannel.addInstrumentName("Percussion");
+            channels.put(9, percussionChannel);
+        }
     }
 
     public void removeCurrentSequence() {

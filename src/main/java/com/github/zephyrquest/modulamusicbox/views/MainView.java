@@ -4,6 +4,7 @@ import com.github.zephyrquest.modulamusicbox.views.components.ChannelsControls;
 import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -28,18 +29,21 @@ public class MainView {
     public void show() {
         VBox mainContainer = new VBox();
         HBox fileSelectionContainer = new HBox();
-        HBox keyboardContainer = new HBox();
+        ScrollPane keyboardContainer = new ScrollPane();
         HBox trackControlsContainer = new HBox();
         HBox channelsControlsContainer = new HBox();
 
         mainContainer.getStyleClass().add("main-view-container");
         fileSelectionContainer.getStyleClass().add("file-selection-container");
         keyboardContainer.getStyleClass().add("keyboard-container");
+        keyboardContainer.setPrefViewportHeight(150);
+        keyboardContainer.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+        keyboardContainer.pannableProperty().set(true);
         trackControlsContainer.getStyleClass().add("track-controls-container");
         channelsControlsContainer.getStyleClass().add("channels-controls-container");
 
         fileSelectionContainer.getChildren().add(fileSelection);
-        keyboardContainer.getChildren().add(keyboard);
+        keyboardContainer.setContent(keyboard);
         trackControlsContainer.getChildren().add(trackControls);
         channelsControlsContainer.getChildren().add(channelsControls);
 

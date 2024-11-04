@@ -16,23 +16,27 @@ public class Keyboard extends StackPane {
     private final double whiteKeyHeight = 120.;
     private final double blackKeyWidth = 15.;
     private final double blackKeyHeight = 60.;
-    private final int octaves = 5;
+    private final int octaves = 7;
 
     private final String[] whiteKeyNotes =
             {
+                    "C1", "D1", "E1", "F1", "G1", "A1", "B1",
                     "C2", "D2", "E2", "F2", "G2", "A2", "B2",
                     "C3", "D3", "E3", "F3", "G3", "A3", "B3",
                     "C4", "D4", "E4", "F4", "G4", "A4", "B4",
                     "C5", "D5", "E5", "F5", "G5", "A5", "B5",
-                    "C6", "D6", "E6", "F6", "G6", "A6", "B6"
+                    "C6", "D6", "E6", "F6", "G6", "A6", "B6",
+                    "C7", "D7", "E7", "F7", "G7", "A7", "B7"
             };
     private final String[] blackKeyNotes =
             {
+                    "CS1", "DS1", "FS1", "GS1", "AS1",
                     "CS2", "DS2", "FS2", "GS2", "AS2",
                     "CS3", "DS3", "FS3", "GS3", "AS3",
                     "CS4", "DS4", "FS4", "GS4", "AS4",
                     "CS5", "DS5", "FS5", "GS5", "AS5",
-                    "CS6", "DS6", "FS6", "GS6", "AS6"
+                    "CS6", "DS6", "FS6", "GS6", "AS6",
+                    "CS7", "DS7", "FS7", "GS7", "AS7"
             };
     private final Map<Integer, Key> keys;
     private Properties midiNotes;

@@ -45,9 +45,9 @@ public class TrackController {
     }
 
     private void setFileSelectionInView() {
-        handleMidiFileMenuSelection();
+        handleFileMenuSelection();
 
-        handleMidiFileFileSystemSelection();
+        handleFileSystemSelection();
     }
 
     private void setTrackControlsInView() {
@@ -55,8 +55,16 @@ public class TrackController {
         var stopButton = trackControls.getStopButton();
         var rewindButton = trackControls.getRewindButton();
 
-        playButton.setOnAction(event -> trackSequencer.startSequencer());
-        stopButton.setOnAction(event -> trackSequencer.stopSequencer());
+        playButton.setOnAction(event -> {
+            trackSequencer.startSequencer();
+            trackControls.playTrack();
+        });
+
+        stopButton.setOnAction(event -> {
+            trackSequencer.stopSequencer();
+            trackControls.stopTrack();
+        });
+
         rewindButton.setOnAction(event -> trackSequencer.rewindSequencer());
 
         var bpmTextfield = trackControls.getBpmTextField();
@@ -126,7 +134,7 @@ public class TrackController {
         trackSynthesizer.setCurrentChannelNumber(channelNumber);
     }
 
-    private void handleMidiFileMenuSelection() {
+    private void handleFileMenuSelection() {
         var midiFileComboBox = fileSelection.getMidiFileComboBox();
 
         var fileNames = midiFileManager.getMidiFiles()
@@ -139,91 +147,68 @@ public class TrackController {
         midiFileComboBox.getSelectionModel().select("-");
 
         midiFileComboBox.setOnAction(event -> {
-            noteReceiverFromSequencer.setActive(false);
-            trackSynthesizer.setCanUserInteract(false);
-            keyboard.releaseAllKeys();
-            trackSequencer.cleanChannels();
-            trackSequencer.stopSequencer();
-            trackSequencer.rewindSequencer();
-            trackSynthesizer.unloadAllInstrumentsFromSynthesizer();
-
-            String midiFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
-            File midiFile = midiFileManager.getMidiFile(midiFileName);
-            if(midiFile != null) {
-                fileSelection.getSelectedFileLabel().setText("");
-
-                try {
-                    changeTrack(midiFile);
-
-                    channelsControls.updateView(trackSequencer.getChannels());
-                    handleMuteChannelCheckboxes();
-                    handleSoloChannelCheckBoxes();
-
-                    float defaultBpm = trackSequencer.getDefaultTempoBpm();
-                    trackControls.updateBpm((int) defaultBpm);
-                    trackControls.showBpm();
-
-                    noteReceiverFromSequencer.setActive(true);
-                    trackSynthesizer.setCanUserInteract(true);
-                }
-                catch (Exception ex) {
-                    removeTrack();
-
-                    trackControls.hideBpm();
-                }
-            }
-            else {
-                removeTrack();
-
-                trackControls.hideBpm();
-            }
+            resetTrackAndSynth();
+            String selectedFileName = midiFileComboBox.getSelectionModel().getSelectedItem();
+            fileSelection.getSelectedFileLabel().setText("");
+            loadSelectedMidiFile(selectedFileName != null ? midiFileManager.getMidiFile(selectedFileName) : null);
         });
     }
 
-    private void handleMidiFileFileSystemSelection() {
+    private void handleFileSystemSelection() {
         var midiFileComboBox = fileSelection.getMidiFileComboBox();
         var fileChooser = fileSelection.getFileChooser();
         var selectFileButton = fileSelection.getSelectFileButton();
 
         selectFileButton.setOnAction(event -> {
             File selectedFile = fileChooser.showOpenDialog(MainFX.stage);
-
-            if(selectedFile != null) {
-                midiFileComboBox.getSelectionModel().selectFirst();
-
-                noteReceiverFromSequencer.setActive(false);
-                trackSynthesizer.setCanUserInteract(false);
-                keyboard.releaseAllKeys();
-                trackSequencer.cleanChannels();
-                trackSequencer.stopSequencer();
-                trackSequencer.rewindSequencer();
-                trackSynthesizer.unloadAllInstrumentsFromSynthesizer();
-
+            if (selectedFile != null) {
+                resetTrackAndSynth();
                 midiFileComboBox.getSelectionModel().selectFirst();
                 fileSelection.getSelectedFileLabel().setText(selectedFile.getName());
-
-                try {
-                    changeTrack(selectedFile);
-
-                    channelsControls.updateView(trackSequencer.getChannels());
-                    handleMuteChannelCheckboxes();
-                    handleSoloChannelCheckBoxes();
-
-                    float defaultBpm = trackSequencer.getDefaultTempoBpm();
-                    trackControls.updateBpm((int) defaultBpm);
-                    trackControls.showBpm();
-
-                    noteReceiverFromSequencer.setActive(true);
-                    trackSynthesizer.setCanUserInteract(true);
-                }
-                catch (Exception ex) {
-                    removeTrack();
-
-                    fileSelection.getSelectedFileLabel().setText("");
-                    trackControls.hideBpm();
-                }
+                loadSelectedMidiFile(selectedFile);
             }
         });
+    }
+
+    private void loadSelectedMidiFile(File midiFile) {
+        if (midiFile != null) {
+            try {
+                changeTrack(midiFile);
+                updateUIControls();
+            } catch (Exception ex) {
+                handleLoadingError();
+            }
+        } else {
+            handleLoadingError();
+        }
+    }
+
+    private void resetTrackAndSynth() {
+        noteReceiverFromSequencer.setActive(false);
+        trackSynthesizer.setCanUserInteract(false);
+        keyboard.releaseAllKeys();
+        trackSequencer.cleanChannels();
+        trackSequencer.stopSequencer();
+        trackSequencer.rewindSequencer();
+        trackSynthesizer.unloadAllInstrumentsFromSynthesizer();
+        trackControls.stopTrack();
+    }
+
+    private void updateUIControls() {
+        channelsControls.updateView(trackSequencer.getChannels());
+        handleMuteChannelCheckboxes();
+        handleSoloChannelCheckBoxes();
+        trackControls.updateBpm(trackSequencer.getDefaultTempoBpm());
+        trackControls.showTrackControls();
+        noteReceiverFromSequencer.setActive(true);
+        trackSynthesizer.setCanUserInteract(true);
+    }
+
+    private void handleLoadingError() {
+        removeTrack();
+        fileSelection.getSelectedFileLabel().setText("");
+        fileSelection.getMidiFileComboBox().getSelectionModel().selectFirst();
+        trackControls.hideTrackControls();
     }
 
     private void handleMuteChannelCheckboxes() {

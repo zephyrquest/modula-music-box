@@ -12,8 +12,8 @@ public class TrackControls extends VBox {
     private final Button playButton;
     private final Button stopButton;
     private final Button rewindButton;
-    private final HBox bpmContainer;
     private final TextField bpmTextField;
+    private final Label bpmLabel;
 
 
     public TrackControls() {
@@ -50,7 +50,7 @@ public class TrackControls extends VBox {
         }
         rewindButton.getStyleClass().add("rewind-button");
 
-        Label bpmLabel = new Label("BPM");
+        bpmLabel = new Label("BPM");
         bpmLabel.getStyleClass().add("bpm-label");
         bpmTextField = new TextField();
         bpmTextField.getStyleClass().add("bpm-text-field");
@@ -59,13 +59,14 @@ public class TrackControls extends VBox {
         buttonsContainer.getStyleClass().add("buttons-container");
         buttonsContainer.getChildren().addAll(rewindButton, playButton, stopButton);
 
-        bpmContainer = new HBox();
+        HBox bpmContainer = new HBox();
         bpmContainer.getStyleClass().add("bpm-container");
-        bpmContainer.setVisible(false);
         bpmContainer.getChildren().addAll(bpmLabel, bpmTextField);
 
         this.getChildren().addAll(buttonsContainer, bpmContainer);
         this.getStyleClass().add("track-controls");
+
+        hideTrackControls();
     }
 
     public Button getPlayButton() {
@@ -84,15 +85,33 @@ public class TrackControls extends VBox {
         return bpmTextField;
     }
 
-    public void showBpm() {
-        bpmContainer.setVisible(true);
-    }
-
-    public void hideBpm() {
-        bpmContainer.setVisible(false);
-    }
-
     public void updateBpm(int bpm) {
         bpmTextField.setText(String.valueOf(bpm));
+    }
+
+    public void showTrackControls() {
+        playButton.setVisible(true);
+        rewindButton.setVisible(true);
+        stopButton.setVisible(true);
+        bpmLabel.setVisible(true);
+        bpmTextField.setVisible(true);
+    }
+
+    public void hideTrackControls() {
+        playButton.setVisible(false);
+        rewindButton.setVisible(false);
+        stopButton.setVisible(false);
+        bpmLabel.setVisible(false);
+        bpmTextField.setVisible(false);
+    }
+
+    public void playTrack() {
+        playButton.setDisable(true);
+        stopButton.setDisable(false);
+    }
+
+    public void stopTrack() {
+        stopButton.setDisable(true);
+        playButton.setDisable(false);
     }
 }

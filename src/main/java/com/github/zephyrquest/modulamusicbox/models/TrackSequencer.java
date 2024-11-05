@@ -12,12 +12,14 @@ public class TrackSequencer {
     private Sequence currentSequence;
     private Map<Integer, Channel> channels;
     private int defaultTempoBpm;
+    private boolean isSequencePlaying;
 
 
     public TrackSequencer() {
         initSequencer();
 
         defaultTempoBpm = 0;
+        isSequencePlaying = false;
     }
 
     public void updateCurrentSequence(File file) throws Exception {
@@ -27,13 +29,15 @@ public class TrackSequencer {
     }
 
     public void startSequencer() {
-        if(sequencer.isOpen() && sequencer.getSequence() != null && currentSequence!= null) {
+        if(sequencer.isOpen() && sequencer.getSequence() != null && currentSequence!= null && !isSequencePlaying) {
+            isSequencePlaying = true;
             sequencer.start();
         }
     }
 
     public void stopSequencer() {
-        if(sequencer.isOpen() && currentSequence!= null) {
+        if(sequencer.isOpen() && currentSequence!= null && isSequencePlaying) {
+            isSequencePlaying = false;
             sequencer.stop();
         }
     }

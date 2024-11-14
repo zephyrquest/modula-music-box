@@ -52,11 +52,13 @@ public class ChannelsControls extends VBox {
             instrumentLabel.setText(sb.toString());
 
             CheckBox muteChannelCheckBox = new CheckBox("Mute");
+            muteChannelCheckBox.getStyleClass().add("mute-channel-box");
             muteChannelCheckBox.setId(id);
             muteChannelCheckBox.setSelected(false);
             muteChannelCheckboxes.add(muteChannelCheckBox);
 
             CheckBox soloChannelCheckBox = new CheckBox("Solo");
+            soloChannelCheckBox.getStyleClass().add("solo-channel-box");
             soloChannelCheckBox.setId(id);
             soloChannelCheckBox.setSelected(false);
             soloChannelCheckboxes.add(soloChannelCheckBox);

@@ -21,6 +21,8 @@
 
 .keyboard-container {
     -fx-alignment: center;
+    -fx-padding: 20 20;
+    -fx-background-color: #c4bbbb;
 }
 
 .white-key-container {
@@ -71,14 +73,14 @@
     -fx-background-color: black;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 14;
+    -fx-font-size: 16;
 }
 
 .select-file-button {
     -fx-background-color: black;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 18;
+    -fx-font-size: 16;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-cursor: hand;
@@ -127,11 +129,25 @@
 .channel-radio-button {
     -fx-font-size: 16;
     -fx-cursor: hand;
+    -fx-pref-width: 150;
+    -fx-text-fill: black;
 }
 
 .instrument-label {
     -fx-font-size: 16;
     -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-mark-color: black;
+}
+
+.mute-channel-box {
+    -fx-text-fill: black;
+    -fx-font-size: 13;
+}
+
+.solo-channel-box {
+    -fx-text-fill: black;
+    -fx-font-size: 13;
 }
 
 .note-label {

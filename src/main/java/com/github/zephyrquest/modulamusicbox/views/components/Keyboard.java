@@ -16,10 +16,11 @@ public class Keyboard extends StackPane {
     private final double whiteKeyHeight = 120.;
     private final double blackKeyWidth = 15.;
     private final double blackKeyHeight = 60.;
-    private final int octaves = 7;
+    private final int octaves = 8;
 
     private final String[] whiteKeyNotes =
             {
+                    "C0", "D0", "E0", "F0", "G0", "A0", "B0",
                     "C1", "D1", "E1", "F1", "G1", "A1", "B1",
                     "C2", "D2", "E2", "F2", "G2", "A2", "B2",
                     "C3", "D3", "E3", "F3", "G3", "A3", "B3",
@@ -30,6 +31,7 @@ public class Keyboard extends StackPane {
             };
     private final String[] blackKeyNotes =
             {
+                    "CS0", "DS0", "FS0", "GS0", "AS0",
                     "CS1", "DS1", "FS1", "GS1", "AS1",
                     "CS2", "DS2", "FS2", "GS2", "AS2",
                     "CS3", "DS3", "FS3", "GS3", "AS3",
@@ -72,13 +74,16 @@ public class Keyboard extends StackPane {
         for(int o = 0; o < octaves; o++) {
             for (int i = 0; i < 5; i++) {
                 BlackKey blackKey = new BlackKey(blackKeyNotes[(o * 5 + i) % blackKeyNotes.length], blackKeyWidth, blackKeyHeight);
+                double translation;
 
                 if(i < 2) {
-                    blackKey.setTranslateX(((o * 2 + 1) * whiteKeyWidth - blackKeyWidth / 2) + o * blackKeyWidth / 2);
+                    translation = ((o * 2 + 1) * whiteKeyWidth - blackKeyWidth / 2 - o + i) + o * blackKeyWidth / 2;
                 }
                 else {
-                    blackKey.setTranslateX(((o * 2 + 2) * whiteKeyWidth - blackKeyWidth / 2) + o * blackKeyWidth / 2);
+                    translation = ((o * 2 + 2) * whiteKeyWidth - blackKeyWidth / 2 - o + i) + o * blackKeyWidth / 2;
                 }
+
+                blackKey.setTranslateX(translation);
 
                 blackKeys[o * 5 + i] = blackKey;
                 int key = Integer.parseInt(midiNotes.getProperty(blackKey.getNote()));

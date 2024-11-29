@@ -133,13 +133,6 @@
     -fx-text-fill: black;
 }
 
-.instrument-label {
-    -fx-font-size: 16;
-    -fx-font-weight: bold;
-    -fx-text-fill: black;
-    -fx-mark-color: black;
-}
-
 .mute-channel-box {
     -fx-text-fill: black;
     -fx-font-size: 13;
@@ -173,4 +166,31 @@
 
 .track-controls {
     -fx-spacing: 20;
+}
+
+.instrument-combo-box {
+    -fx-background-color: black;
+    -fx-border-color: black;
+    -fx-cursor: hand;
+}
+
+.instrument-combo-box .list-cell, .combo-box {
+    -fx-cursor: hand;
+}
+
+.instrument-combo-box .list-cell, .combo-box .text-field {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+
+.reset-instrument-button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
 }

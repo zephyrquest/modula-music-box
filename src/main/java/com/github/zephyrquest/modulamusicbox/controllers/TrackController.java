@@ -205,6 +205,8 @@ public class TrackController {
 
         handleMuteChannelCheckboxes();
         handleSoloChannelCheckBoxes();
+        handleInstrumentComboBoxes();
+        handleResetInstrumentButtons();
 
         trackControls.updateBpm(trackSequencer.getDefaultTempoBpm());
         trackControls.showTrackControls();
@@ -279,5 +281,35 @@ public class TrackController {
         }
 
         changeTrackBpm(newBpm);
+    }
+
+    private void handleInstrumentComboBoxes() {
+        for (var instrumentComboBox : channelsControls.getInstrumentCheckboxes()) {
+            instrumentComboBox.setOnAction(event -> {
+                String id = instrumentComboBox.getId();
+                String instrumentName = instrumentComboBox.getSelectionModel().getSelectedItem();
+
+                changeInstrumentInChannel(Integer.parseInt(id), instrumentName);
+            });
+        }
+    }
+
+    private void changeInstrumentInChannel(int channelNumber, String instrumentName) {
+        trackSynthesizer.changeInstrumentInChannel(channelNumber, instrumentName);
+    }
+
+    private void handleResetInstrumentButtons() {
+        for (var resetInstrumentButton : channelsControls.getResetInstrumentButtons()) {
+            resetInstrumentButton.setOnAction(event -> {
+                String id = resetInstrumentButton.getId();
+
+                Channel channel = trackSequencer.getChannel(Integer.parseInt(id));
+
+                if(channel != null) {
+                    changeInstrumentInChannel(Integer.parseInt(id), channel.getDefaultInstrument());
+                    channelsControls.selectInstrument(id, channel.getDefaultInstrument());
+                }
+            });
+        }
     }
 }

@@ -83,7 +83,7 @@ public class TrackSequencer {
                         String instrumentName = instrument.getName().trim();
                         Channel channel = getChannel(channelNumber);
                         if (channel == null) {
-                            Channel newChannel = new Channel(channelNumber, instrumentName.trim());
+                            Channel newChannel = new Channel(channelNumber, instrumentName.trim(), true);
                             channels.add(newChannel);
                         }
                     }
@@ -92,7 +92,7 @@ public class TrackSequencer {
         }
 
         if(percussionChannelPresent) {
-            Channel percussionChannel = new Channel(9, "Percussion");
+            Channel percussionChannel = new Channel(9, "Percussion", false);
             channels.add(percussionChannel);
         }
 
@@ -133,6 +133,14 @@ public class TrackSequencer {
         return channels;
     }
 
+    public Channel getChannel(int channelNumber) {
+        return channels
+                .stream()
+                .filter(channel -> channel.getNumber() == channelNumber)
+                .findFirst()
+                .orElse(null);
+    }
+
     private void initSequencer() {
         try {
             sequencer = MidiSystem.getSequencer(false);
@@ -142,13 +150,5 @@ public class TrackSequencer {
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Channel getChannel(int channelNumber) {
-        return channels
-                .stream()
-                .filter(channel -> channel.getNumber() == channelNumber)
-                .findFirst()
-                .orElse(null);
     }
 }

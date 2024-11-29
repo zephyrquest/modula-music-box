@@ -1,6 +1,7 @@
 package com.github.zephyrquest.modulamusicbox.models;
 
 import javax.sound.midi.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,14 @@ public class TrackSynthesizer {
         }
 
         return availableInstruments[index];
+    }
+
+    public static List<String> getAllInstrumentNames() {
+        if(availableInstruments == null) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(availableInstruments).map(instrument -> instrument.getName().trim()).toList();
     }
 
     public void playNode(int noteNumber) {
@@ -118,6 +127,18 @@ public class TrackSynthesizer {
                             instrumentOpt.get().getPatch().getProgram());
                 }
             }
+        }
+    }
+
+    public void changeInstrumentInChannel(int channelNumber, String instrumentName) {
+        var instrumentOpt = Arrays.stream(availableInstruments)
+                .filter(instrument -> instrument.getName().trim().equals(instrumentName))
+                .findFirst();
+
+        if(instrumentOpt.isPresent()) {
+            synthesizer.loadInstrument(instrumentOpt.get());
+            midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
+                    instrumentOpt.get().getPatch().getProgram());
         }
     }
 

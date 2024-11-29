@@ -1,10 +1,8 @@
 package com.github.zephyrquest.modulamusicbox.views.components;
 
 import com.github.zephyrquest.modulamusicbox.models.Channel;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import com.github.zephyrquest.modulamusicbox.models.TrackSynthesizer;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -15,11 +13,15 @@ public class ChannelsControls extends VBox {
     private final ToggleGroup channelButtonsGroup;
     private final List<CheckBox> muteChannelCheckboxes;
     private final List<CheckBox> soloChannelCheckboxes;
+    private final List<ComboBox<String>> instrumentCheckboxes;
+    private final List<Button> resetInstrumentButtons;
 
     public ChannelsControls() {
         channelButtonsGroup = new ToggleGroup();
         muteChannelCheckboxes = new ArrayList<>();
         soloChannelCheckboxes = new ArrayList<>();
+        instrumentCheckboxes = new ArrayList<>();
+        resetInstrumentButtons = new ArrayList<>();
     }
 
     public void updateChannels(List<Channel> channels) {
@@ -39,10 +41,6 @@ public class ChannelsControls extends VBox {
             channelRadioButton.setToggleGroup(channelButtonsGroup);
             channelButtons.add(channelRadioButton);
 
-            Label instrumentLabel = new Label();
-            instrumentLabel.getStyleClass().add("instrument-label");
-            instrumentLabel.setText(channel.getInstrument());
-
             CheckBox muteChannelCheckBox = new CheckBox("Mute");
             muteChannelCheckBox.getStyleClass().add("mute-channel-box");
             muteChannelCheckBox.setId(id);
@@ -55,7 +53,29 @@ public class ChannelsControls extends VBox {
             soloChannelCheckBox.setSelected(false);
             soloChannelCheckboxes.add(soloChannelCheckBox);
 
-            channelContainer.getChildren().addAll(channelRadioButton, muteChannelCheckBox, soloChannelCheckBox, instrumentLabel);
+            ComboBox<String> instrumentComboBox = new ComboBox<>();
+            instrumentComboBox.getStyleClass().add("instrument-combo-box");
+            instrumentComboBox.setId(id);
+            instrumentComboBox.getItems().addAll(TrackSynthesizer.getAllInstrumentNames());
+            instrumentComboBox.getSelectionModel().select(channel.getDefaultInstrument());
+            instrumentComboBox.setDisable(!channel.isInstrumentEditable());
+            instrumentCheckboxes.add(instrumentComboBox);
+
+            channelContainer.getChildren().addAll(
+                    channelRadioButton,
+                    muteChannelCheckBox,
+                    soloChannelCheckBox,
+                    instrumentComboBox);
+
+            if(channel.isInstrumentEditable()) {
+                Button resetInstrumentButton = new Button("Reset Instrument");
+                resetInstrumentButton.getStyleClass().add("reset-instrument-button");
+                resetInstrumentButton.setId(id);
+                resetInstrumentButtons.add(resetInstrumentButton);
+
+                channelContainer.getChildren().add(resetInstrumentButton);
+            }
+
             this.getChildren().addAll(channelContainer);
         }
 
@@ -69,6 +89,8 @@ public class ChannelsControls extends VBox {
         channelButtonsGroup.getToggles().clear();
         muteChannelCheckboxes.clear();
         soloChannelCheckboxes.clear();
+        instrumentCheckboxes.clear();
+        resetInstrumentButtons.clear();
     }
 
     public void selectAllMuteChannelCheckboxes() {
@@ -134,6 +156,15 @@ public class ChannelsControls extends VBox {
         }
     }
 
+    public void selectInstrument(String id, String instrumentName) {
+        var instrumentComboBoxOpt = instrumentCheckboxes
+                .stream()
+                .filter(instrumentComboBox -> instrumentComboBox.getId().equals(id))
+                .findFirst();
+
+        instrumentComboBoxOpt.ifPresent(comboBox -> comboBox.getSelectionModel().select(instrumentName));
+    }
+
     public ToggleGroup getChannelButtonsGroup() {
         return channelButtonsGroup;
     }
@@ -144,5 +175,13 @@ public class ChannelsControls extends VBox {
 
     public List<CheckBox> getSoloChannelCheckboxes() {
         return soloChannelCheckboxes;
+    }
+
+    public List<ComboBox<String>> getInstrumentCheckboxes() {
+        return instrumentCheckboxes;
+    }
+
+    public List<Button> getResetInstrumentButtons() {
+        return resetInstrumentButtons;
     }
 }

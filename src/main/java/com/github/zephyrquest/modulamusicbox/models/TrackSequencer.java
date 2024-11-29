@@ -2,15 +2,14 @@ package com.github.zephyrquest.modulamusicbox.models;
 
 import javax.sound.midi.*;
 import java.io.File;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TrackSequencer {
     private Sequencer sequencer;
     private Transmitter transmitter1;
     private Transmitter transmitter2;
     private Sequence currentSequence;
-    private Map<Integer, Channel> channels;
+    private List<Channel> channels;
     private int defaultTempoBpm;
     private boolean isSequencePlaying;
 
@@ -82,13 +81,10 @@ public class TrackSequencer {
                     Instrument instrument = TrackSynthesizer.getInstrument(shortMessage.getData1());
                     if (instrument != null) {
                         String instrumentName = instrument.getName().trim();
-                        Channel channel = channels.get(channelNumber);
+                        Channel channel = getChannel(channelNumber);
                         if (channel == null) {
-                            Channel newChannel = new Channel();
-                            newChannel.addInstrumentName(instrumentName);
-                            channels.put(channelNumber, newChannel);
-                        } else if (!channel.getInstruments().contains(instrumentName)) {
-                            channel.addInstrumentName(instrumentName);
+                            Channel newChannel = new Channel(channelNumber, instrumentName.trim());
+                            channels.add(newChannel);
                         }
                     }
                 }
@@ -96,10 +92,11 @@ public class TrackSequencer {
         }
 
         if(percussionChannelPresent) {
-            Channel percussionChannel = new Channel();
-            percussionChannel.addInstrumentName("Percussion");
-            channels.put(9, percussionChannel);
+            Channel percussionChannel = new Channel(9, "Percussion");
+            channels.add(percussionChannel);
         }
+
+        channels.sort(Comparator.comparingInt(Channel::getNumber));
     }
 
     public void removeCurrentSequence() {
@@ -109,7 +106,7 @@ public class TrackSequencer {
     }
 
     public void cleanChannels() {
-        channels = new TreeMap<>();
+        channels = new ArrayList<>();
     }
 
     public int getDefaultTempoBpm() {
@@ -121,7 +118,7 @@ public class TrackSequencer {
     }
 
     public int getDefaultChannelNumber() {
-        return channels.keySet().iterator().next();
+        return channels.get(0).getNumber();
     }
 
     public Transmitter getTransmitter1() {
@@ -132,7 +129,7 @@ public class TrackSequencer {
         return transmitter2;
     }
 
-    public Map<Integer, Channel> getChannels() {
+    public List<Channel> getChannels() {
         return channels;
     }
 
@@ -145,5 +142,13 @@ public class TrackSequencer {
         } catch (MidiUnavailableException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Channel getChannel(int channelNumber) {
+        return channels
+                .stream()
+                .filter(channel -> channel.getNumber() == channelNumber)
+                .findFirst()
+                .orElse(null);
     }
 }

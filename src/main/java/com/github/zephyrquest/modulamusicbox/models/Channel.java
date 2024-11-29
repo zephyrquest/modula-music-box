@@ -1,21 +1,21 @@
 package com.github.zephyrquest.modulamusicbox.models;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Channel {
-    private final List<String> instruments;
+    private final int number;
+    private final String instrument;
 
 
-    public Channel() {
-        this.instruments = new ArrayList<>();
+    public Channel(int number, String instrument) {
+        this.number = number;
+        this.instrument = instrument;
     }
 
-    public List<String> getInstruments() {
-        return instruments;
+    public int getNumber() {
+        return number;
     }
 
-    public void addInstrumentName(String instrumentName) {
-        instruments.add(instrumentName);
+    public String getInstrument() {
+        return instrument;
     }
 }

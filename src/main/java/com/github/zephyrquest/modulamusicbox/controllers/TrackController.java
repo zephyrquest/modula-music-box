@@ -10,7 +10,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
 import java.io.File;
-import java.util.TreeMap;
+import java.util.ArrayList;
 
 public class TrackController {
     private final TrackSequencer trackSequencer;
@@ -126,9 +126,12 @@ public class TrackController {
     private void removeTrack() {
         trackSequencer.removeCurrentSequence();
         trackSequencer.updateChannels();
+
         trackSynthesizer.unmuteAllChannels();
         trackSynthesizer.unsoloAllChannels();
-        channelsControls.updateView(new TreeMap<>());
+
+        channelsControls.clearChannels();
+        channelsControls.updateChannels(new ArrayList<>());
     }
 
     private void changeChannelInTrack(int channelNumber) {
@@ -197,11 +200,15 @@ public class TrackController {
     }
 
     private void updateUIControls() {
-        channelsControls.updateView(trackSequencer.getChannels());
+        channelsControls.clearChannels();
+        channelsControls.updateChannels(trackSequencer.getChannels());
+
         handleMuteChannelCheckboxes();
         handleSoloChannelCheckBoxes();
+
         trackControls.updateBpm(trackSequencer.getDefaultTempoBpm());
         trackControls.showTrackControls();
+
         noteReceiverFromSequencer.setActive(true);
         trackSynthesizer.setCanUserInteract(true);
     }

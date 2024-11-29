@@ -2,7 +2,7 @@ package com.github.zephyrquest.modulamusicbox.models;
 
 import javax.sound.midi.*;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 public class TrackSynthesizer {
     private static Instrument[] availableInstruments;
@@ -99,27 +99,23 @@ public class TrackSynthesizer {
         }
     }
 
-    public void setInstrumentsInChannels(Map<Integer, Channel> channels) {
-        for(var entry : channels.entrySet()) {
-            int channelNumber = entry.getKey();
+    public void setInstrumentsInChannels(List<Channel> channels) {
+        for(var channel : channels) {
+            int channelNumber = channel.getNumber();
 
             if (channelNumber == 9) {
                 continue;
             }
 
-            var instrumentNames = entry.getValue().getInstruments();
+            if(channelNumber < midiChannels.length) {
+                var instrumentOpt = Arrays.stream(availableInstruments)
+                        .filter(instrument -> instrument.getName().trim().equals(channel.getInstrument()))
+                        .findFirst();
 
-            if(channelNumber >= 0 && channelNumber < midiChannels.length) {
-                for(var instrumentName : instrumentNames) {
-                    var instrumentOpt = Arrays.stream(availableInstruments)
-                            .filter(instrument -> instrument.getName().trim().equals(instrumentName))
-                            .findFirst();
-
-                    if(instrumentOpt.isPresent()) {
-                        synthesizer.loadInstrument(instrumentOpt.get());
-                        midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
-                                instrumentOpt.get().getPatch().getProgram());
-                    }
+                if(instrumentOpt.isPresent()) {
+                    synthesizer.loadInstrument(instrumentOpt.get());
+                    midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
+                            instrumentOpt.get().getPatch().getProgram());
                 }
             }
         }

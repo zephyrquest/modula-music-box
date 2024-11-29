@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ChannelsControls extends VBox {
     private final ToggleGroup channelButtonsGroup;
@@ -23,21 +22,18 @@ public class ChannelsControls extends VBox {
         soloChannelCheckboxes = new ArrayList<>();
     }
 
-    public void updateView(Map<Integer, Channel> channels) {
-        this.getChildren().clear();
-        channelButtonsGroup.getToggles().clear();
-        muteChannelCheckboxes.clear();
-        soloChannelCheckboxes.clear();
-
+    public void updateChannels(List<Channel> channels) {
         List<RadioButton> channelButtons = new ArrayList<>();
 
-        for(var entry : channels.entrySet()) {
+        for(var channel : channels) {
+            int channelNumber = channel.getNumber();
+
             HBox channelContainer = new HBox();
             channelContainer.getStyleClass().add("channel-container");
 
-            String id = String.valueOf(entry.getKey());
+            String id = String.valueOf(channelNumber);
 
-            RadioButton channelRadioButton = new RadioButton("Channel " + (entry.getKey() + 1));
+            RadioButton channelRadioButton = new RadioButton("Channel " + (channelNumber + 1));
             channelRadioButton.getStyleClass().add("channel-radio-button");
             channelRadioButton.setId(id);
             channelRadioButton.setToggleGroup(channelButtonsGroup);
@@ -45,11 +41,7 @@ public class ChannelsControls extends VBox {
 
             Label instrumentLabel = new Label();
             instrumentLabel.getStyleClass().add("instrument-label");
-            StringBuilder sb = new StringBuilder();
-            for(var instrumentName : entry.getValue().getInstruments()) {
-                sb.append(instrumentName).append("\t");
-            }
-            instrumentLabel.setText(sb.toString());
+            instrumentLabel.setText(channel.getInstrument());
 
             CheckBox muteChannelCheckBox = new CheckBox("Mute");
             muteChannelCheckBox.getStyleClass().add("mute-channel-box");
@@ -70,6 +62,13 @@ public class ChannelsControls extends VBox {
         if(!channelButtons.isEmpty()) {
             channelButtonsGroup.selectToggle(channelButtons.get(0));
         }
+    }
+
+    public void clearChannels() {
+        this.getChildren().clear();
+        channelButtonsGroup.getToggles().clear();
+        muteChannelCheckboxes.clear();
+        soloChannelCheckboxes.clear();
     }
 
     public void selectAllMuteChannelCheckboxes() {

@@ -7,6 +7,7 @@ import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 
 import java.io.File;
 import java.util.TreeMap;
@@ -56,37 +57,20 @@ public class TrackController {
         var rewindButton = trackControls.getRewindButton();
 
         playButton.setOnAction(event -> {
-            trackSequencer.startSequencer();
-            trackControls.playTrack();
+            playTrack();
         });
 
         stopButton.setOnAction(event -> {
-            trackSequencer.stopSequencer();
-            trackControls.stopTrack();
+            stopTrack();
         });
 
-        rewindButton.setOnAction(event -> trackSequencer.rewindSequencer());
+        rewindButton.setOnAction(event -> {
+            rewindTrack();
+        });
 
         var bpmTextfield = trackControls.getBpmTextField();
         bpmTextfield.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            if(newValue.isEmpty()) {
-                return;
-            }
-
-            if (!newValue.matches("\\d*")) {
-                newValue = newValue.replaceAll("\\D", "");
-                bpmTextfield.setText(newValue);
-            }
-
-            int newBpm = Integer.parseInt(newValue);
-            int defaultBpm = trackSequencer.getDefaultTempoBpm();
-
-            if(newBpm == 0 || newBpm > 240) {
-                newBpm = defaultBpm;
-                bpmTextfield.setText(String.valueOf(newBpm));
-            }
-
-            trackSequencer.updateTempoBpm(newBpm);
+            handleBpmChange(bpmTextfield, newValue);
         });
     }
 
@@ -106,6 +90,24 @@ public class TrackController {
                 trackSynthesizer.setCanUserInteract(true);
             }
         });
+    }
+
+    private void playTrack() {
+        trackSequencer.startSequencer();
+        trackControls.playTrack();
+    }
+
+    private void stopTrack() {
+        trackSequencer.stopSequencer();
+        trackControls.stopTrack();
+    }
+
+    private void rewindTrack() {
+        trackSequencer.rewindSequencer();
+    }
+
+    private void changeTrackBpm(int bpm) {
+        trackSequencer.updateTempoBpm(bpm);
     }
 
     private void changeTrack(File midiFile) throws Exception {
@@ -249,5 +251,26 @@ public class TrackController {
                 }
             });
         }
+    }
+
+    private void handleBpmChange(TextField bpmTextfield, String bpm) {
+        if(bpm.isEmpty()) {
+            return;
+        }
+
+        if (!bpm.matches("\\d*")) {
+            bpm = bpm.replaceAll("\\D", "");
+            bpmTextfield.setText(bpm);
+        }
+
+        int newBpm = Integer.parseInt(bpm);
+        int defaultBpm = trackSequencer.getDefaultTempoBpm();
+
+        if(newBpm == 0 || newBpm > 240) {
+            newBpm = defaultBpm;
+            bpmTextfield.setText(String.valueOf(newBpm));
+        }
+
+        changeTrackBpm(newBpm);
     }
 }

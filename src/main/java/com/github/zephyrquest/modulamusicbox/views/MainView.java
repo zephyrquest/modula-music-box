@@ -31,21 +31,23 @@ public class MainView {
         HBox fileSelectionContainer = new HBox();
         ScrollPane keyboardContainer = new ScrollPane();
         HBox trackControlsContainer = new HBox();
-        HBox channelsControlsContainer = new HBox();
+        ScrollPane channelsControlsContainer = new ScrollPane();
 
         mainContainer.getStyleClass().add("main-view-container");
         fileSelectionContainer.getStyleClass().add("file-selection-container");
         keyboardContainer.getStyleClass().add("keyboard-container");
         keyboardContainer.setPrefViewportHeight(150);
-        keyboardContainer.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+        //keyboardContainer.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         keyboardContainer.pannableProperty().set(true);
         trackControlsContainer.getStyleClass().add("track-controls-container");
         channelsControlsContainer.getStyleClass().add("channels-controls-container");
+        channelsControlsContainer.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+        channelsControlsContainer.setMaxWidth(700);
 
         fileSelectionContainer.getChildren().add(fileSelection);
         keyboardContainer.setContent(keyboard);
         trackControlsContainer.getChildren().add(trackControls);
-        channelsControlsContainer.getChildren().add(channelsControls);
+        channelsControlsContainer.setContent(channelsControls);
 
         mainContainer.getChildren().addAll(fileSelectionContainer, keyboardContainer, trackControlsContainer,
                 channelsControlsContainer);

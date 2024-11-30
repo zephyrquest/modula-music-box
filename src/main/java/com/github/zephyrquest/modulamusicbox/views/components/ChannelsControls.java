@@ -22,6 +22,9 @@ public class ChannelsControls extends VBox {
         soloChannelCheckboxes = new ArrayList<>();
         instrumentCheckboxes = new ArrayList<>();
         resetInstrumentButtons = new ArrayList<>();
+
+        this.getStyleClass().add("channels-controls");
+        hideControls();
     }
 
     public void updateChannels(List<Channel> channels) {
@@ -163,6 +166,14 @@ public class ChannelsControls extends VBox {
                 .findFirst();
 
         instrumentComboBoxOpt.ifPresent(comboBox -> comboBox.getSelectionModel().select(instrumentName));
+    }
+
+    public void showControls() {
+        this.setVisible(true);
+    }
+
+    public void hideControls() {
+        this.setVisible(false);
     }
 
     public ToggleGroup getChannelButtonsGroup() {

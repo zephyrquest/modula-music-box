@@ -132,6 +132,7 @@ public class TrackController {
 
         channelsControls.clearChannels();
         channelsControls.updateChannels(new ArrayList<>());
+        channelsControls.hideControls();
     }
 
     private void changeChannelInTrack(int channelNumber) {
@@ -200,6 +201,7 @@ public class TrackController {
     }
 
     private void updateUIControls() {
+        channelsControls.hideControls();
         channelsControls.clearChannels();
         channelsControls.updateChannels(trackSequencer.getChannels());
 
@@ -213,6 +215,8 @@ public class TrackController {
 
         noteReceiverFromSequencer.setActive(true);
         trackSynthesizer.setCanUserInteract(true);
+
+        channelsControls.showControls();
     }
 
     private void handleLoadingError() {

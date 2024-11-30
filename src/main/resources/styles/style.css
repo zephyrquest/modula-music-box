@@ -15,8 +15,18 @@
     -fx-alignment: center;
 }
 
+.channels-controls {
+    -fx-spacing: 5;
+    -fx-background-color: #c4bbbb;
+    -fx-padding: 20 20;
+}
+
 .channels-controls-container {
     -fx-alignment: center;
+    -fx-padding: 20 20;
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    /*-fx-background-color: #c4bbbb;*/
 }
 
 .keyboard-container {

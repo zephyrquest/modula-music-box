@@ -11,6 +11,7 @@ public class TrackSequencer {
     private Sequence currentSequence;
     private List<Channel> channels;
     private int defaultTempoBpm;
+    private int currentBpm;
     private boolean isSequencePlaying;
 
 
@@ -18,6 +19,7 @@ public class TrackSequencer {
         initSequencer();
 
         defaultTempoBpm = 0;
+        currentBpm = 0;
         isSequencePlaying = false;
     }
 
@@ -25,6 +27,7 @@ public class TrackSequencer {
         currentSequence = MidiSystem.getSequence(file);
         sequencer.setSequence(currentSequence);
         defaultTempoBpm = (int) sequencer.getTempoInBPM();
+        currentBpm = defaultTempoBpm;
     }
 
     public void startSequencer() {
@@ -44,6 +47,9 @@ public class TrackSequencer {
     public void rewindSequencer() {
         if(sequencer.isOpen() && currentSequence!= null) {
             sequencer.setTickPosition(0);
+
+            // Reset the current BPM to ensure that when the sequencer restarts, it does not revert to the default BPM
+            sequencer.setTempoInBPM(currentBpm);
         }
     }
 
@@ -103,10 +109,19 @@ public class TrackSequencer {
         currentSequence = null;
 
         defaultTempoBpm = 0;
+        currentBpm = 0;
     }
 
     public void cleanChannels() {
         channels = new ArrayList<>();
+    }
+
+    public void changeInstrumentInChannel(int channelNumber, String instrumentName) {
+        Channel channel = getChannel(channelNumber);
+
+        if(channel != null) {
+            channel.setInstrument(instrumentName);
+        }
     }
 
     public int getDefaultTempoBpm() {
@@ -114,7 +129,8 @@ public class TrackSequencer {
     }
 
     public void updateTempoBpm(int bpm) {
-        sequencer.setTempoInBPM(bpm);
+        currentBpm = bpm;
+        sequencer.setTempoInBPM(currentBpm);
     }
 
     public int getDefaultChannelNumber() {
@@ -139,6 +155,23 @@ public class TrackSequencer {
                 .filter(channel -> channel.getNumber() == channelNumber)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public int getCurrentSequencePosition() {
+        long microsecondPosition = sequencer.getMicrosecondPosition();
+        return (int) microsecondPosition / 1000000;
+    }
+
+    public void setCurrentSequencePosition(int seconds) {
+        sequencer.setMicrosecondPosition(seconds * 1000000L);
+
+        // Reset the current BPM to ensure that when the sequence position is updated, it does not revert to the default BPM
+        sequencer.setTempoInBPM(currentBpm);
+    }
+
+    public int getSequenceLengthInSeconds() {
+        long microsecondLength = sequencer.getMicrosecondLength();
+        return (int) microsecondLength / 1000000;
     }
 
     private void initSequencer() {

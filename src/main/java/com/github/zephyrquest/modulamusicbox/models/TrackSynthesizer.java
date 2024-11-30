@@ -130,7 +130,7 @@ public class TrackSynthesizer {
         }
     }
 
-    public void changeInstrumentInChannel(int channelNumber, String instrumentName) {
+    public boolean changeInstrumentInChannel(int channelNumber, String instrumentName) {
         var instrumentOpt = Arrays.stream(availableInstruments)
                 .filter(instrument -> instrument.getName().trim().equals(instrumentName))
                 .findFirst();
@@ -139,7 +139,10 @@ public class TrackSynthesizer {
             synthesizer.loadInstrument(instrumentOpt.get());
             midiChannels[channelNumber].programChange(instrumentOpt.get().getPatch().getBank(),
                     instrumentOpt.get().getPatch().getProgram());
+            return true;
         }
+
+        return false;
     }
 
     public Receiver getReceiver() {

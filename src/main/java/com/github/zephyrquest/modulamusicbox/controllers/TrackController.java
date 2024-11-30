@@ -6,8 +6,10 @@ import com.github.zephyrquest.modulamusicbox.views.components.ChannelsControls;
 import com.github.zephyrquest.modulamusicbox.views.components.FileSelection;
 import com.github.zephyrquest.modulamusicbox.views.components.Keyboard;
 import com.github.zephyrquest.modulamusicbox.views.components.TrackControls;
+import javafx.animation.KeyFrame;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,6 +74,24 @@ public class TrackController {
         bpmTextfield.textProperty().addListener((observableValue, oldValue, newValue) -> {
             handleBpmChange(bpmTextfield, newValue);
         });
+
+        var trackTimeline = trackControls.getTrackTimeline();
+        trackTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), event -> {
+            trackControls.updateTrackTimeline(trackSequencer.getCurrentSequencePosition());
+        }));
+
+        var trackTimelineSlider = trackControls.getTrackTimelineSlider();
+        trackTimelineSlider.valueChangingProperty().addListener((observableValue, wasChanging, isChanging) -> {
+            trackControls.setTrackTimelineSliderEditable(false);
+
+            if(!isChanging) {
+                int seconds = (int) trackTimelineSlider.getValue();
+                trackSequencer.setCurrentSequencePosition(seconds);
+                // reset the current instruments to ensure that when the sequencer restarts, it does not revert to the default instruments
+                trackSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
+                trackControls.setTrackTimelineSliderEditable(true);
+            }
+        });
     }
 
     private void setChannelsControlsInView() {
@@ -104,6 +124,11 @@ public class TrackController {
 
     private void rewindTrack() {
         trackSequencer.rewindSequencer();
+
+        // reset the current instruments to ensure that when the sequencer restarts, it does not revert to the default instruments
+        trackSynthesizer.setInstrumentsInChannels(trackSequencer.getChannels());
+
+        trackControls.updateTrackTimeline(0);
     }
 
     private void changeTrackBpm(int bpm) {
@@ -211,12 +236,14 @@ public class TrackController {
         handleResetInstrumentButtons();
 
         trackControls.updateBpm(trackSequencer.getDefaultTempoBpm());
+        trackControls.updateTrackTimeline(0);
+        trackControls.setTrackLength(trackSequencer.getSequenceLengthInSeconds());
         trackControls.showTrackControls();
+
+        channelsControls.showControls();
 
         noteReceiverFromSequencer.setActive(true);
         trackSynthesizer.setCanUserInteract(true);
-
-        channelsControls.showControls();
     }
 
     private void handleLoadingError() {
@@ -299,7 +326,9 @@ public class TrackController {
     }
 
     private void changeInstrumentInChannel(int channelNumber, String instrumentName) {
-        trackSynthesizer.changeInstrumentInChannel(channelNumber, instrumentName);
+        if (trackSynthesizer.changeInstrumentInChannel(channelNumber, instrumentName)) {
+            trackSequencer.changeInstrumentInChannel(channelNumber, instrumentName);
+        }
     }
 
     private void handleResetInstrumentButtons() {

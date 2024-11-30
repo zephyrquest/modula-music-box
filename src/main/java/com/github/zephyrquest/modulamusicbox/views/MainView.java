@@ -36,8 +36,6 @@ public class MainView {
         mainContainer.getStyleClass().add("main-view-container");
         fileSelectionContainer.getStyleClass().add("file-selection-container");
         keyboardContainer.getStyleClass().add("keyboard-container");
-        keyboardContainer.setPrefViewportHeight(150);
-        //keyboardContainer.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         keyboardContainer.pannableProperty().set(true);
         trackControlsContainer.getStyleClass().add("track-controls-container");
         channelsControlsContainer.getStyleClass().add("channels-controls-container");

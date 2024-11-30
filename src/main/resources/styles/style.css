@@ -26,13 +26,13 @@
     -fx-padding: 20 20;
     -fx-background: transparent;
     -fx-background-color: transparent;
-    /*-fx-background-color: #c4bbbb;*/
 }
 
 .keyboard-container {
     -fx-alignment: center;
     -fx-padding: 20 20;
     -fx-background-color: #c4bbbb;
+    -fx-min-height: 200;
 }
 
 .white-key-container {
@@ -203,4 +203,29 @@
     -fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-cursor: hand;
+}
+
+.track-timeline-slider {
+    -fx-pref-width: 300;
+    -fx-padding: 5 5;
+    -fx-background-color: black;
+}
+
+.track-timeline-slider .track {
+    -fx-background-color: white;
+}
+
+.track-timeline-slider .thumb {
+    -fx-background-color: #c4bbbb;
+    -fx-cursor: hand;
+}
+
+.track-timeline-container {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.track-timeline-label-container {
+    -fx-alignment: center;
+    -fx-pref-width: 100;
 }

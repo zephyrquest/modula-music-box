@@ -9,9 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
-public class TrackControls extends VBox {
+public class TrackControls extends HBox {
     private final Button playButton;
     private final Button stopButton;
     private final Button rewindButton;
@@ -30,43 +29,40 @@ public class TrackControls extends VBox {
         if(playIconStream != null) {
             Image playIcon = new Image(playIconStream);
             ImageView playImageView = new ImageView(playIcon);
-            playButton = new Button("Play", playImageView);
+            playButton = new Button("", playImageView);
         }
         else {
             playButton = new Button("Play");
         }
-        playButton.getStyleClass().add("play-button");
+        playButton.getStyleClass().add("track-controls-button");
 
         var stopIconStream = getClass().getResourceAsStream("/icons/pause-24.png");
         if(stopIconStream != null) {
             Image stopIcon = new Image(stopIconStream);
             ImageView stopImageView = new ImageView(stopIcon);
-            stopButton = new Button("Stop", stopImageView);
+            stopButton = new Button("", stopImageView);
         }
         else {
             stopButton = new Button("Stop");
         }
-        stopButton.getStyleClass().add("stop-button");
+        stopButton.getStyleClass().add("track-controls-button");
 
         var rewindIconStream = getClass().getResourceAsStream("/icons/rewind-24.png");
         if(rewindIconStream != null) {
             Image rewindIcon = new Image(rewindIconStream);
             ImageView rewindImageView = new ImageView(rewindIcon);
-            rewindButton = new Button("Rewind", rewindImageView);
+            rewindButton = new Button("", rewindImageView);
         }
         else {
             rewindButton = new Button("Rewind");
         }
-        rewindButton.getStyleClass().add("rewind-button");
+        rewindButton.getStyleClass().add("track-controls-button");
 
         bpmLabel = new Label("BPM");
         bpmLabel.getStyleClass().add("bpm-label");
         bpmTextField = new TextField();
         bpmTextField.getStyleClass().add("bpm-text-field");
-
-        HBox buttonsContainer = new HBox();
-        buttonsContainer.getStyleClass().add("buttons-container");
-        buttonsContainer.getChildren().addAll(rewindButton, playButton, stopButton);
+        bpmTextField.setFocusTraversable(false);
 
         HBox bpmContainer = new HBox();
         bpmContainer.getStyleClass().add("bpm-container");
@@ -81,7 +77,9 @@ public class TrackControls extends VBox {
         trackTimelineSliderEditable = true;
 
         trackTimelineLabel = new Label();
+        trackTimelineLabel.getStyleClass().add("timeline-label");
         trackLengthLabel = new Label();
+        trackLengthLabel.getStyleClass().add("timeline-label");
 
         HBox trackTimeLineLabelContainer = new HBox();
         trackTimeLineLabelContainer.getStyleClass().add("track-timeline-label-container");
@@ -94,7 +92,7 @@ public class TrackControls extends VBox {
         trackTimeline = new Timeline();
         trackTimeline.setCycleCount(Timeline.INDEFINITE);
 
-        this.getChildren().addAll(buttonsContainer, bpmContainer, trackTimeLineContainer);
+        this.getChildren().addAll(rewindButton, trackTimeLineContainer, stopButton, playButton, bpmContainer);
         this.getStyleClass().add("track-controls");
 
         hideTrackControls();

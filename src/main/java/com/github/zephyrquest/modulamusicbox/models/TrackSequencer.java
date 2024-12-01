@@ -34,6 +34,8 @@ public class TrackSequencer {
         if(sequencer.isOpen() && sequencer.getSequence() != null && currentSequence!= null && !isSequencePlaying) {
             isSequencePlaying = true;
             sequencer.start();
+            // Reset the current BPM to ensure that when the sequencer restarts, it does not revert to the default BPM
+            sequencer.setTempoInBPM(currentBpm);
         }
     }
 
@@ -172,6 +174,10 @@ public class TrackSequencer {
     public int getSequenceLengthInSeconds() {
         long microsecondLength = sequencer.getMicrosecondLength();
         return (int) microsecondLength / 1000000;
+    }
+
+    public Sequencer getSequencer() {
+        return sequencer;
     }
 
     private void initSequencer() {

@@ -39,10 +39,6 @@
     -fx-alignment: baseline-center;
 }
 
-.buttons-container {
-    -fx-spacing: 30;
-}
-
 .channel-container {
     -fx-spacing: 30;
 }
@@ -103,36 +99,12 @@
     -fx-max-width: 200;
 }
 
-.rewind-button {
+.track-controls-button {
     -fx-background-color: black;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 18;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-pref-width: 120;
-    -fx-cursor: hand;
-}
-
-.play-button {
-    -fx-background-color: black;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 18;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-pref-width: 120;
-    -fx-cursor: hand;
-}
-
-.stop-button {
-    -fx-background-color: black;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 18;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-pref-width: 120;
+    -fx-pref-width: 30;
     -fx-cursor: hand;
 }
 
@@ -158,7 +130,7 @@
 }
 
 .bpm-container {
-    -fx-alignment: baseline-center;
+    -fx-alignment: center;
     -fx-spacing: 5;
 }
 
@@ -228,4 +200,8 @@
 .track-timeline-label-container {
     -fx-alignment: center;
     -fx-pref-width: 100;
+}
+
+.timeline-label {
+    -fx-font-size: 14;
 }

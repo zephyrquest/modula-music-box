@@ -42,6 +42,13 @@ public class TrackController {
         this.trackSequencer.getTransmitter1().setReceiver(this.trackSynthesizer.getReceiver());
         this.trackSequencer.getTransmitter2().setReceiver(this.noteReceiverFromSequencer);
 
+        this.trackSequencer.getSequencer().addMetaEventListener(event -> {
+            // reached end of sequence
+            if (event.getType() == 47) {
+                stopTrack();
+            }
+        });
+
         setFileSelectionInView();
         setTrackControlsInView();
         setChannelsControlsInView();

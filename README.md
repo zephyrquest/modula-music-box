@@ -14,24 +14,19 @@ in real time with each note played, and interact with the interface to play your
 or adjust the beats per minute to alter the track's playback speed. Solo and mute channels to focus on specific instruments.
 
 ![ModulaMusicBox](doc/modulamusicbox.png)
-
-## Requirements
-
-- Java 17 or above.
-
+   
 ## Installation
+To install and run the application, follow one of these steps:
+1. **Download the Executable** (Windows Only)
+   - [modula-music-box.exe (ZIP)](https://github.com/zephyrquest/modula-music-box/releases/download/v1.0.0/ModulaMusicBox_v1.0.0.zip).
+   - unzip the downloaded folder and run the executable to launch the application.
+2. **Download the Source Code** (Java 17+ required)
+   - [ZIP](https://github.com/zephyrquest/modula-music-box/archive/refs/tags/v1.0.0.zip)
+   - [TAR](https://github.com/zephyrquest/modula-music-box/archive/refs/tags/v1.0.0.tar.gz)
+   - unzip the downloaded folder and run the jar file
+      ```bash
+     java -jar ModulaMusicBox.jar
+      ```
 
-1. Clone repository:
-    ```bash
-    git clone https://github.com/zephyrquest/modula-music-box.git
-    ```
-
-2. Move inside root folder:
-    ```bash
-    cd modula-music-box
-    ```
-
-3. Start the application
-    ```bash
-    java -jar ModulaMusicBox.jar
-    ```
+## Reporting Issues
+If you encounter any problems or discover bugs, feel free to open a new issue. Your feedback is greatly appreciated!
